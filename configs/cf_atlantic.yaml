@@ -1,0 +1,38 @@
+# Atlantic-domain extension (hurricane case study).
+
+aliases:
+  sst: sea_surface_temperature
+  u10: eastward_wind
+  v10: northward_wind
+  t2m: air_temperature
+  u200: eastward_wind
+  v200: northward_wind
+  u850: eastward_wind
+  v850: northward_wind
+  msl: air_pressure_at_mean_sea_level
+  mslp: air_pressure_at_mean_sea_level
+  tp: precipitation_amount
+  prcp: precipitation_amount
+
+units:
+  degree_Celsius: K
+  degC: K
+  Pa: Pa
+  hPa: Pa
+  mbar: Pa
+  "kg m-2": mm
+
+derived_hints:
+  wind_shear_200_850:
+    description: Magnitude of the vector difference between 200 hPa and 850 hPa winds.
+  hurricane_mpi:
+    description: Maximum potential intensity (Emanuel) from SST + atmospheric profile.
+  hurricane_zone:
+    description: >-
+      Joint mask of (wind_speed > tropical-storm threshold) AND
+      (mean sea-level pressure < 980 hPa). Domain heuristic for tropical
+      cyclone footprint; not a CF standard name.
+  storm_intensity:
+    description: >-
+      Negative MSLP anomaly normalised against the climate-state pressure
+      (1013 hPa) — used as a monotone proxy for cyclone intensity.

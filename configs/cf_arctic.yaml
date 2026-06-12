@@ -1,0 +1,32 @@
+# Arctic-domain extension (sea ice / SST coupling case study).
+
+aliases:
+  sic: sea_ice_area_fraction
+  sea_ice_concentration: sea_ice_area_fraction
+  sit: sea_ice_thickness
+  sst: sea_surface_temperature
+  t2m: air_temperature
+  u10: eastward_wind
+  v10: northward_wind
+  msl: air_pressure_at_mean_sea_level
+  mslp: air_pressure_at_mean_sea_level
+
+units:
+  "%": "1"
+  fraction: "1"
+  degree_Celsius: K
+  degC: K
+  hPa: hPa
+  Pa: hPa
+
+derived_hints:
+  sic_loss_rate:
+    description: Time derivative of sea-ice area fraction over a configurable window.
+  cold_air_outbreak_index:
+    description: Composite of t2m anomaly and northerly wind component.
+  sic_anomaly:
+    description: Sea-ice concentration anomaly against a long-term September baseline.
+  melt_pond_proxy:
+    description: >-
+      Cells with low concentration AND surface air temperature above freezing
+      — a heuristic for active melt conditions, not a CF standard name.

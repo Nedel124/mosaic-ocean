@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+.mypy_cache/
+.ruff_cache/
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Notebooks (strip outputs before committing)
+.ipynb_checkpoints/
+
+# Local data / outputs
+data/
+out/
+*.zarr/
+*.nc
+*.grib
+*.geotiff
+*.tif
+
+# Mosaic local artifacts
+mosaic.lock
+~/.mosaic/
+.mosaic/
+
+# Docs build
+site/

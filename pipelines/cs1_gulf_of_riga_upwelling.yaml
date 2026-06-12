@@ -1,0 +1,103 @@
+# MOSAIC CS1 — Gulf of Riga coastal upwelling, July 2021
+# ----------------------------------------------------------------------------
+# Combines CMEMS Baltic L4 SST + ECMWF ERA5 10 m winds into a harmonised Zarr
+# store with SST-based and pixel-wise SST--wind derived variables.
+#
+# The pipeline is auditable end-to-end: every re-run with the same cache (or
+# the same live-data window) produces the same `mosaic:content_hash`. Without
+# credentials (CMEMS / CDS), use the offline fixture twin in
+# `tests/fixtures/cs1_gulf_of_riga_offline.yaml` — see README §CS1 for
+# instructions.
+apiVersion: mosaic/v1
+kind: Pipeline
+
+metadata:
+  name: cs1_gulf_of_riga_upwelling_2021
+  description: >-
+    Gulf of Riga coastal upwelling episode, 12–22 July 2021. Demonstrates
+    semantic harmonisation across CMEMS and ERA5, spatial SST anomaly
+    detection, and a pixel-wise SST–wind intersection mask in a semi-enclosed
+    basin.
+  authors:
+    - { name: "Gabriela Gic-Grusza", orcid: "0000-0002-5542-118X" }
+    - { name: "Adrian Bugaj" }
+  tags: [case_study, gulf_of_riga, upwelling, cs1]
+
+spec:
+  domain:
+    bbox: [22.0, 56.5, 24.8, 58.5]   # Gulf of Riga domain
+    time:
+      start: "2021-07-12"
+      stop:  "2021-07-22"
+      resolution: "1D"
+
+  sources:
+    # CMEMS Baltic L4 analysed SST — daily reprocessed (Met Office OSTIA chain
+    # for the Baltic/North Sea region).
+    # Dataset verified live on 2026-05-12 via
+    # `copernicusmarine.describe(contains=["BAL","SST","L4"])`. Kept in sync
+    # with `scripts/fetch_cs1_gulf_of_riga.py::CMEMS_SST_DATASET_ID`.
+    - id: cmems_sst
+      plugin: cmems
+      params:
+        dataset_id: cmems_obs-sst_bal_phy-temp_my_l4_P1D-m
+        variables: [analysed_sst]
+        cache_dir: data/cache/cmems/cs1_gulf_of_riga
+
+    # ERA5 single-levels 10 m wind components — hourly, aggregated to daily mean.
+    - id: era5_wind
+      plugin: era5
+      params:
+        dataset: reanalysis-era5-single-levels
+        product_type: reanalysis
+        variables:
+          - 10m_u_component_of_wind
+          - 10m_v_component_of_wind
+        hours: ["00:00", "06:00", "12:00", "18:00"]
+        cache_dir: data/cache/era5/cs1_gulf_of_riga
+
+  harmonize:
+    cf_dictionary: configs/cf_baltic.yaml
+    time_alignment: daily_mean
+    overrides:
+      cmems_sst.analysed_sst:
+        standard_name: sea_surface_temperature
+        units: K
+
+  qc:
+    rules:
+      sea_surface_temperature:
+        type: range
+        min: 270.0      # K, sanity bound for liquid seawater
+        max: 305.0
+        flag: out_of_range
+      eastward_wind:
+        type: range
+        min: -50.0
+        max: 50.0
+        flag: out_of_range
+      northward_wind:
+        type: range
+        min: -50.0
+        max: 50.0
+        flag: out_of_range
+
+  fuse:
+    derived:
+      - name: wind_speed
+        expression: "sqrt(eastward_wind**2 + northward_wind**2)"
+      - name: sst_spatial_anomaly
+        expression: "sea_surface_temperature - sea_surface_temperature_daily_spatial_median"
+      - name: upwelling_mask_sst
+        expression: "sst_spatial_anomaly < -2.0"
+      - name: upwelling_mask_sst_wind
+        expression: "(sst_spatial_anomaly < -2.0) & (wind_speed > 4.0)"
+
+  export:
+    format: zarr
+    path: out/cs1_gulf_of_riga_upwelling_live.zarr
+    provenance: true
+
+  reproducibility:
+    seed: 0
+    strict_versions: true

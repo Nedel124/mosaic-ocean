@@ -1,0 +1,75 @@
+# Offline twin of pipelines/cs3_arctic_seaice.yaml — every source is a
+# LocalNetcdfSource pointing at a synthetic fixture.
+apiVersion: mosaic/v1
+kind: Pipeline
+
+metadata:
+  name: cs3_arctic_seaice_offline
+  description: >-
+    Offline reproduction of the CS3 Arctic sea-ice pipeline using synthetic
+    fixtures emulating NSIDC G02202 sea-ice concentration, ERA5 surface
+    fields, and a September SIC climatology.
+  tags: [case_study, arctic, sea_ice, offline]
+
+spec:
+  domain:
+    bbox: [-170.0, 70.0, -130.0, 80.0]
+    time:
+      start: "2012-09-01"
+      stop:  "2012-09-15"
+      resolution: "1D"
+
+  sources:
+    - id: nsidc_sic
+      plugin: local_netcdf
+      params:
+        path: tests/fixtures/cs3/nsidc_arctic_sic_2012-09.nc
+        variables: [sic]
+    - id: era5_surface
+      plugin: local_netcdf
+      params:
+        path: tests/fixtures/cs3/era5_arctic_surface_2012-09.nc
+        variables: [t2m, msl]
+    - id: sic_clim
+      plugin: local_netcdf
+      params:
+        path: tests/fixtures/cs3/arctic_sic_climatology_sep.nc
+        variables: [sic_climatology]
+
+  harmonize:
+    cf_dictionary: configs/cf_arctic.yaml
+    time_alignment: daily_mean
+    overrides:
+      nsidc_sic.sic:
+        standard_name: sea_ice_area_fraction
+        units: "1"
+      era5_surface.msl:
+        standard_name: air_pressure_at_mean_sea_level
+        units: hPa
+      sic_clim.sic_climatology:
+        standard_name: sea_ice_area_fraction_climatology
+        units: "1"
+
+  qc:
+    rules:
+      sea_ice_area_fraction:
+        type: range
+        min: 0.0
+        max: 1.0
+        flag: out_of_range
+
+  fuse:
+    derived:
+      - name: sic_anomaly
+        expression: "sea_ice_area_fraction - sea_ice_area_fraction_climatology"
+      - name: melt_pond_proxy
+        expression: "(sea_ice_area_fraction < 0.5) & (air_temperature > 273.15)"
+
+  export:
+    format: zarr
+    path: out/cs3_arctic_seaice_offline.zarr
+    provenance: true
+
+  reproducibility:
+    seed: 0
+    strict_versions: false

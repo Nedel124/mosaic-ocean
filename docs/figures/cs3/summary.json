@@ -1,0 +1,14 @@
+{
+  "pipeline_hash": "blake3:668a1bc01c4e6ce3d4ceb0dad572a745b82040623484dd46f7b1ed2cc655a10e",
+  "content_hash": "blake3:4fef294f973671124d479d99f6ab44e23a3cb583fe52ee285222a72b22567f30",
+  "n_flagged": 1609,
+  "n_total": 6765,
+  "panel_days": [
+    0,
+    4,
+    9,
+    14
+  ],
+  "mapping_accuracy": 1.0,
+  "sic_anomaly_min": -0.5714285969734192
+}

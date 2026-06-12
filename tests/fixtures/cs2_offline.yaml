@@ -1,0 +1,70 @@
+# Offline twin of pipelines/cs2_atlantic_hurricane.yaml — every gridded
+# source is a LocalNetcdfSource pointing at a synthetic fixture. Used by
+# the test-suite and by reviewers without CMEMS / CDS credentials.
+apiVersion: mosaic/v1
+kind: Pipeline
+
+metadata:
+  name: cs2_atlantic_hurricane_offline
+  description: >-
+    Offline reproduction of the CS2 Atlantic hurricane pipeline using
+    synthetic fixtures emulating CMEMS Global L4 SST and ERA5 single-levels
+    atmospheric fields (10 m wind, MSLP, total precipitation).
+  tags: [case_study, atlantic, hurricane, offline]
+
+spec:
+  domain:
+    bbox: [-95.0, 18.0, -78.0, 32.0]
+    time:
+      start: "2021-08-26"
+      stop:  "2021-09-02"
+      resolution: "1D"
+
+  sources:
+    - id: cmems_sst
+      plugin: local_netcdf
+      params:
+        path: tests/fixtures/cs2/cmems_gulf_sst_2021-08.nc
+        variables: [analysed_sst]
+    - id: era5_atmos
+      plugin: local_netcdf
+      params:
+        path: tests/fixtures/cs2/era5_gulf_atmos_2021-08.nc
+        variables: [u10, v10, msl, tp]
+
+  harmonize:
+    cf_dictionary: configs/cf_atlantic.yaml
+    time_alignment: daily_mean
+    overrides:
+      cmems_sst.analysed_sst:
+        standard_name: sea_surface_temperature
+        units: K
+      era5_atmos.msl:
+        standard_name: air_pressure_at_mean_sea_level
+        units: hPa
+
+  qc:
+    rules:
+      sea_surface_temperature:
+        type: range
+        min: 270.0
+        max: 310.0
+        flag: out_of_range
+
+  fuse:
+    derived:
+      - name: wind_speed
+        expression: "sqrt(eastward_wind**2 + northward_wind**2)"
+      - name: storm_intensity
+        expression: "1013.0 - air_pressure_at_mean_sea_level"
+      - name: hurricane_zone
+        expression: "(wind_speed > 17.0) & (air_pressure_at_mean_sea_level < 980.0)"
+
+  export:
+    format: zarr
+    path: out/cs2_atlantic_hurricane_offline.zarr
+    provenance: true
+
+  reproducibility:
+    seed: 0
+    strict_versions: false

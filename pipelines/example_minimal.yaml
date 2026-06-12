@@ -1,0 +1,51 @@
+# Minimal MOSAIC pipeline used in the README quickstart and the unit tests.
+# Uses the synthetic DummySource so it runs offline.
+apiVersion: mosaic/v1
+kind: Pipeline
+
+metadata:
+  name: example_minimal
+  description: >-
+    Minimal end-to-end demo: ingest synthetic SST and 10 m wind, harmonize
+    against the Baltic CF dictionary, apply a single range QC rule, export
+    to Zarr with STAC provenance.
+  authors:
+    - { name: "Gabriela Gic-Grusza", orcid: "0000-0002-5542-118X" }
+  tags: [demo, dummy]
+
+spec:
+  domain:
+    bbox: [14.0, 54.0, 22.0, 60.0]
+    time:
+      start: "2022-06-01"
+      stop:  "2022-06-07"
+      resolution: "1D"
+
+  sources:
+    - id: dummy
+      plugin: dummy
+      params:
+        variables: [sst, u10]
+        resolution_deg: 0.5
+        seed: 0
+
+  harmonize:
+    cf_dictionary: configs/cf_baltic.yaml
+    time_alignment: instantaneous
+
+  qc:
+    rules:
+      sea_surface_temperature:
+        type: range
+        min: -2.0
+        max: 35.0
+        flag: out_of_range
+
+  export:
+    format: zarr
+    path: out/example_minimal.zarr
+    provenance: true
+
+  reproducibility:
+    seed: 0
+    strict_versions: false

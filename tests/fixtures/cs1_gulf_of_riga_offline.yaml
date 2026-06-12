@@ -1,0 +1,105 @@
+# Offline twin of the CS1 Gulf of Riga upwelling workflow — every source is a
+# LocalNetcdfSource pointing at deterministic local fixtures. Used by the
+# test-suite and by reviewers without CMEMS/CDS credentials.
+#
+# The live CS1 notebook/pipeline reports the geophysical counts from real
+# CMEMS/ERA5 products, e.g. the 183 SST-anomaly cells and the 3 cells retained
+# by the strict pixel-wise SST--wind intersection on 2021-07-16. This offline
+# fixture is not expected to reproduce those exact live-data counts. Its role is
+# to verify that the same processing logic is runnable, hashable and
+# deterministic without external services.
+apiVersion: mosaic/v1
+kind: Pipeline
+
+metadata:
+  name: cs1_gulf_of_riga_upwelling_offline
+  description: >-
+    Offline reproduction of the CS1 Gulf of Riga upwelling workflow using
+    deterministic local fixtures emulating CMEMS L4 SST and ERA5 10 m winds for
+    July 2021. The workflow tests the SST-led spatial anomaly mask and the more
+    restrictive pixel-wise SST--wind intersection mask.
+  tags: [case_study, gulf_of_riga, upwelling, offline]
+
+spec:
+  domain:
+    bbox: [22.0, 56.8, 24.8, 58.4]
+    time:
+      start: "2021-07-12"
+      stop:  "2021-07-22"
+      resolution: "1D"
+
+  sources:
+    - id: cmems_sst
+      plugin: local_netcdf
+      params:
+        path: tests/fixtures/cs1_gulf_of_riga/cmems_gulf_of_riga_sst_2021-07.nc
+        # The fixture was already normalised by the fixture-generation script.
+        # It contains sea_surface_temperature and daily_median_sst.
+        variables: [sea_surface_temperature, daily_median_sst]
+    - id: era5_wind
+      plugin: local_netcdf
+      params:
+        path: tests/fixtures/cs1_gulf_of_riga/era5_gulf_of_riga_wind_2021-07.nc
+        # The fixture was already normalised by the fixture-generation script.
+        # It contains eastward_wind and northward_wind.
+        variables: [eastward_wind, northward_wind]
+
+  harmonize:
+    cf_dictionary: configs/cf_baltic.yaml
+    time_alignment: daily_mean
+    overrides:
+      cmems_sst.sea_surface_temperature:
+        standard_name: sea_surface_temperature
+        units: K
+      cmems_sst.daily_median_sst:
+        standard_name: sea_surface_temperature_daily_spatial_median
+        units: K
+      era5_wind.eastward_wind:
+        standard_name: eastward_wind
+        units: m s-1
+      era5_wind.northward_wind:
+        standard_name: northward_wind
+        units: m s-1
+
+  qc:
+    rules:
+      sea_surface_temperature:
+        type: range
+        min: 270.0
+        max: 305.0
+        flag: out_of_range
+      sea_surface_temperature_daily_spatial_median:
+        type: range
+        min: 270.0
+        max: 305.0
+        flag: out_of_range
+      eastward_wind:
+        type: range
+        min: -50.0
+        max: 50.0
+        flag: out_of_range
+      northward_wind:
+        type: range
+        min: -50.0
+        max: 50.0
+        flag: out_of_range
+
+  fuse:
+    derived:
+      - name: wind_speed
+        expression: "sqrt(eastward_wind**2 + northward_wind**2)"
+      - name: sst_spatial_anomaly
+        expression: "sea_surface_temperature - sea_surface_temperature_daily_spatial_median"
+      - name: upwelling_mask_sst
+        expression: "sst_spatial_anomaly < -2.0"
+      - name: upwelling_mask_sst_wind
+        expression: "(sst_spatial_anomaly < -2.0) & (wind_speed > 4.0)"
+
+  export:
+    format: zarr
+    path: out/cs1_gulf_of_riga_upwelling_offline.zarr
+    provenance: true
+
+  reproducibility:
+    seed: 0
+    strict_versions: false

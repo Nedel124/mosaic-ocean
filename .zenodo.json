@@ -1,0 +1,56 @@
+{
+  "title": "MOSAIC: Multi-source Ocean Sensor And model Integration Catalogue",
+  "description": "<p>An open-source Python framework for declarative, reproducible integration of heterogeneous oceanographic data — satellite, numerical model, and in-situ observations — with automatic semantic harmonization, quality control, and content-addressable provenance recorded as STAC metadata. The repository accompanies the manuscript <em>An Open Python Framework for Reproducible Multi-Source Ocean Data Integration: Three Case Studies from the Baltic, Atlantic and Arctic</em> submitted to <em>Computers &amp; Geosciences</em>, and ships the CS1 (Baltic coastal upwelling, July 2018) pipeline plus its companion notebook end-to-end.</p>",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "version": "0.1.0",
+  "creators": [
+    {
+      "name": "Gic-Grusza, Gabriela",
+      "affiliation": "Faculty of Oceanography and Geography, University of Gdansk, Poland",
+      "orcid": "0000-0002-5542-118X"
+    },
+    {
+      "name": "Bugaj, Adrian"
+    }
+  ],
+  "keywords": [
+    "oceanography",
+    "data integration",
+    "FAIR",
+    "STAC",
+    "reproducibility",
+    "xarray",
+    "Copernicus Marine",
+    "ERA5",
+    "Digital Twin Ocean",
+    "Baltic Sea",
+    "upwelling"
+  ],
+  "communities": [
+    {"identifier": "ocean-decade"}
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/gagigr/mosaic-ocean",
+      "relation": "isSupplementTo",
+      "resource_type": "software",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.5281/zenodo.xxxxxxx",
+      "relation": "isVersionOf",
+      "resource_type": "software",
+      "scheme": "doi"
+    }
+  ],
+  "subjects": [
+    {
+      "term": "Oceanography",
+      "identifier": "https://id.loc.gov/authorities/subjects/sh85094423.html",
+      "scheme": "url"
+    }
+  ],
+  "notes": "Companion paper: Gic-Grusza & Bugaj, An Open Python Framework for Reproducible Multi-Source Ocean Data Integration, manuscript in preparation for Computers & Geosciences."
+}

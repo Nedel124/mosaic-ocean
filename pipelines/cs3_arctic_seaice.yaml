@@ -1,0 +1,99 @@
+# MOSAIC CS3 — Arctic sea-ice retreat, September 2012
+# ----------------------------------------------------------------------------
+# Combines NSIDC daily sea-ice concentration (G02202 climate-data-record) with
+# ERA5 single-levels surface fields (2 m air temperature, mean sea-level
+# pressure) and a long-term September SIC climatology (1991-2020) over the
+# Beaufort/Chukchi sector. The pipeline produces a harmonized Zarr store
+# with a `melt_pond_proxy` derived mask combining low SIC and above-freezing
+# surface air.
+apiVersion: mosaic/v1
+kind: Pipeline
+
+metadata:
+  name: cs3_arctic_seaice_2012
+  description: >-
+    Beaufort/Chukchi sea-ice retreat, September 2012 minimum. Demonstrates
+    semantic harmonization across NSIDC sea-ice and ERA5 surface products,
+    a long-term anomaly computation against a published climatology, and
+    a derived melt-pond proxy mask.
+  authors:
+    - { name: "Gabriela Gic-Grusza", orcid: "0000-0002-5542-118X" }
+    - { name: "Adrian Bugaj" }
+  tags: [case_study, arctic, sea_ice, cs3]
+
+spec:
+  domain:
+    bbox: [-170.0, 70.0, -130.0, 80.0]
+    time:
+      start: "2012-09-01"
+      stop:  "2012-09-15"
+      resolution: "1D"
+
+  sources:
+    - id: nsidc_sic
+      plugin: local_netcdf
+      params:
+        # Production runs replace this with a real fetch to NSIDC G02202.
+        # See scripts/fetch_cs3.py.
+        path: data/cache/nsidc/g02202_v4_sic_2012-09.nc
+        variables: [sic]
+
+    - id: era5_surface
+      plugin: era5
+      params:
+        dataset: reanalysis-era5-single-levels
+        product_type: reanalysis
+        variables:
+          - 2m_temperature
+          - mean_sea_level_pressure
+        hours: ["00:00", "06:00", "12:00", "18:00"]
+        cache_dir: data/cache/era5
+
+    - id: sic_clim
+      plugin: local_netcdf
+      params:
+        path: data/climatologies/arctic_sic_climatology_sep.nc
+        variables: [sic_climatology]
+
+  harmonize:
+    cf_dictionary: configs/cf_arctic.yaml
+    time_alignment: daily_mean
+    overrides:
+      nsidc_sic.sic:
+        standard_name: sea_ice_area_fraction
+        units: "1"
+      era5_surface.msl:
+        standard_name: air_pressure_at_mean_sea_level
+        units: hPa
+      sic_clim.sic_climatology:
+        standard_name: sea_ice_area_fraction_climatology
+        units: "1"
+
+  qc:
+    rules:
+      sea_ice_area_fraction:
+        type: range
+        min: 0.0
+        max: 1.0
+        flag: out_of_range
+      air_temperature:
+        type: range
+        min: 220.0
+        max: 320.0
+        flag: out_of_range
+
+  fuse:
+    derived:
+      - name: sic_anomaly
+        expression: "sea_ice_area_fraction - sea_ice_area_fraction_climatology"
+      - name: melt_pond_proxy
+        expression: "(sea_ice_area_fraction < 0.5) & (air_temperature > 273.15)"
+
+  export:
+    format: zarr
+    path: out/cs3_arctic_seaice_2012.zarr
+    provenance: true
+
+  reproducibility:
+    seed: 0
+    strict_versions: false

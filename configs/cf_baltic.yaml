@@ -1,0 +1,34 @@
+# Baltic-domain extension to the CF Standard Name Table v85.
+# Aliases map source-side names to canonical CF standard_names.
+# Unit aliases are recognised by the harmonizer and the unit converter.
+
+aliases:
+  sst: sea_surface_temperature
+  thetao: sea_water_potential_temperature
+  so: sea_water_salinity
+  chl: mass_concentration_of_chlorophyll_in_sea_water
+  chlorophyll: mass_concentration_of_chlorophyll_in_sea_water
+  u10: eastward_wind
+  v10: northward_wind
+  t2m: air_temperature
+  sea_surface_height: sea_surface_height_above_geoid
+
+units:
+  degree_Celsius: K
+  degC: K
+  "deg C": K
+  "m/s": "m s-1"
+  "kn": "m s-1"
+
+# Domain-specific derived variables surface in mosaic.fuse expressions.
+derived_hints:
+  upwelling_mask_sst:
+    description: >-
+      Spatial SST anomaly below -2 K relative to the daily domain-wide
+      median. SST-only upwelling footprint. Domain heuristic, not a CF
+      standard name.
+  upwelling_mask_sst_wind:
+    description: >-
+      Pixel-wise intersection of upwelling_mask_sst and a wind-speed
+      threshold (wind_speed > 4 m s-1). More restrictive combined mask.
+      Domain heuristic, not a CF standard name.
