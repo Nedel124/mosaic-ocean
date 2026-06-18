@@ -254,7 +254,7 @@ def _resolve_name(name: str, ds: xr.Dataset) -> Any:
         return ds[name]
     if name in _ALLOWED_CONSTS:
         return _ALLOWED_CONSTS[name]
-    available = sorted(list(ds.data_vars) + list(ds.coords))
+    available = sorted(str(k) for k in list(ds.data_vars) + list(ds.coords))
     raise DerivationError(
         f"unknown name '{name}' in expression; available data_vars/coords: {available}"
     )

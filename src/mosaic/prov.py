@@ -36,7 +36,7 @@ def dataset_content_hash(ds: xr.Dataset) -> str:
     of the order in which variables were added to the dataset.
     """
     h = blake3.blake3()
-    for name in sorted(ds.data_vars):
+    for name in sorted(str(k) for k in ds.data_vars):
         arr: np.ndarray = np.asarray(ds[name].values)
         h.update(name.encode("utf-8"))
         h.update(arr.tobytes())

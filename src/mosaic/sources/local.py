@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
@@ -139,7 +139,7 @@ class LocalNetcdfSource(Source):
 
         # zarr stores live in directories; everything else is opened by file.
         if path.endswith((".zarr", ".zarr/")) or Path(path).is_dir():
-            return xr.open_zarr(path, consolidated=True, chunks=self.chunks)
+            return cast(xr.Dataset, xr.open_zarr(path, consolidated=True, chunks=self.chunks))
         if any(ch in path for ch in "*?["):
             return xr.open_mfdataset(path, combine="by_coords", **kwargs)
         return xr.open_dataset(path, **kwargs)
