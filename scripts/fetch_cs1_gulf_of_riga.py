@@ -269,7 +269,8 @@ def populate_fixtures(
     }
 
     if not all(p.exists() for p in expected.values()):
-        builder = REPO_ROOT / "tests" / "fixtures" / "build_cs1_gulf_of_riga_fixtures.py"
+        _script_root = Path(__file__).resolve().parents[1]
+        builder = _script_root / "tests" / "fixtures" / "build_cs1_gulf_of_riga_fixtures.py"
         if not builder.exists():
             typer.secho(
                 f"[err] missing fixtures and builder not found: {builder}",

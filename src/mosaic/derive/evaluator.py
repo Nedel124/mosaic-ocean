@@ -120,8 +120,8 @@ def apply_derived(
             # promote scalars / ndarray results to DataArray broadcast over time
             result = xr.DataArray(result)
         result.attrs.setdefault("long_name", spec.name)
-        result.attrs.setdefault("mosaic:expression", spec.expression)
-        result.attrs.setdefault("mosaic:derived", "true")
+        result.attrs["mosaic:expression"] = spec.expression
+        result.attrs["mosaic:derived"] = "true"
         out = out.assign({spec.name: result})
         report.derived.append(spec.name)
 
