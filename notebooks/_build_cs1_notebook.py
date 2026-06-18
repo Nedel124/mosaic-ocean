@@ -348,7 +348,7 @@ def build() -> nbf.NotebookNode:
 
 def main() -> None:
     nb = build()
-    NB_PATH.write_text(nbf.writes(nb))
+    NB_PATH.write_text(nbf.writes(nb), encoding="utf-8")
     print(f"wrote {NB_PATH}")
 
 
