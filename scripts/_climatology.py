@@ -11,6 +11,7 @@ The function is split into a *pure* core (:func:`_collapse_to_doy_mean`)
 and an *I/O wrapper* (:func:`compute_july_climatology`) so the algorithm
 stays unit-testable against synthetic inputs without touching the network.
 """
+
 from __future__ import annotations
 
 from collections.abc import Iterable
@@ -21,7 +22,6 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import xarray as xr
-
 
 JULY = 7
 
@@ -135,9 +135,7 @@ def compute_july_climatology(
             cache_dir=cache_dir,
         )
         if cmems_variable not in ds.data_vars:
-            raise KeyError(
-                f"variable {cmems_variable!r} not present in CMEMS download for {year}"
-            )
+            raise KeyError(f"variable {cmems_variable!r} not present in CMEMS download for {year}")
         yearly.append(ds[cmems_variable])
 
     stacked = xr.concat(yearly, dim="time").sortby("time")
@@ -184,4 +182,4 @@ def _default_fetch_year(
     return src.fetch(query)
 
 
-__all__ = ["compute_july_climatology", "_collapse_to_doy_mean"]
+__all__ = ["_collapse_to_doy_mean", "compute_july_climatology"]

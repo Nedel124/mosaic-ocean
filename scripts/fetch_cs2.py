@@ -19,6 +19,7 @@ Subcommands
                 Skip the network and seed the cache locations from the
                 synthetic test fixtures.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -141,13 +142,10 @@ def _do_sst(*, cache_dir: Path, dataset_id: str, dry_run: bool) -> None:
         variables=[CMEMS_SST_VARIABLE],
         cache_dir=str(cache_dir),
     )
-    query = SourceQuery(
-        bbox=CS2_BBOX, time_start=CS2_TIME_START, time_stop=CS2_TIME_STOP
-    )
+    query = SourceQuery(bbox=CS2_BBOX, time_start=CS2_TIME_START, time_stop=CS2_TIME_STOP)
     ds = src.fetch(query)
     typer.secho(
-        f"[ok] cmems_sst — cache_hit={ds.attrs.get('mosaic_cache_hit')} "
-        f"shape={dict(ds.sizes)}",
+        f"[ok] cmems_sst — cache_hit={ds.attrs.get('mosaic_cache_hit')} shape={dict(ds.sizes)}",
         fg=typer.colors.GREEN,
     )
 
@@ -181,13 +179,10 @@ def _do_atmos(*, cache_dir: Path, dataset: str, dry_run: bool) -> None:
         hours=ERA5_HOURS,
         cache_dir=str(cache_dir),
     )
-    query = SourceQuery(
-        bbox=CS2_BBOX, time_start=CS2_TIME_START, time_stop=CS2_TIME_STOP
-    )
+    query = SourceQuery(bbox=CS2_BBOX, time_start=CS2_TIME_START, time_stop=CS2_TIME_STOP)
     ds = src.fetch(query)
     typer.secho(
-        f"[ok] era5_atmos — cache_hit={ds.attrs.get('mosaic_cache_hit')} "
-        f"shape={dict(ds.sizes)}",
+        f"[ok] era5_atmos — cache_hit={ds.attrs.get('mosaic_cache_hit')} shape={dict(ds.sizes)}",
         fg=typer.colors.GREEN,
     )
 
@@ -287,12 +282,9 @@ def populate_fixtures(
         build_all(fixtures_dir)
 
     src_to_dst = {
-        fixtures_dir / "cmems_gulf_sst_2021-08.nc":
-            cache_dir / "cmems" / "cmems_sst_offline.nc",
-        fixtures_dir / "era5_gulf_atmos_2021-08.nc":
-            cache_dir / "era5" / "era5_atmos_offline.nc",
-        fixtures_dir / "ibtracs_ida_like.csv":
-            track_dir / "ibtracs_ida_like.csv",
+        fixtures_dir / "cmems_gulf_sst_2021-08.nc": cache_dir / "cmems" / "cmems_sst_offline.nc",
+        fixtures_dir / "era5_gulf_atmos_2021-08.nc": cache_dir / "era5" / "era5_atmos_offline.nc",
+        fixtures_dir / "ibtracs_ida_like.csv": track_dir / "ibtracs_ida_like.csv",
     }
     for src, dst in src_to_dst.items():
         if not src.exists():
@@ -323,8 +315,7 @@ def manifest(
 
     if not files:
         typer.secho(
-            "[warn] no files found — run `sst`, `atmos`, `track`, or "
-            "`populate-fixtures` first.",
+            "[warn] no files found — run `sst`, `atmos`, `track`, or `populate-fixtures` first.",
             fg=typer.colors.YELLOW,
         )
 

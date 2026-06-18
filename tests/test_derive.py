@@ -1,4 +1,5 @@
 """Unit tests for the derived-variable evaluator."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -32,9 +33,7 @@ def toy_ds() -> xr.Dataset:
 
 
 def test_simple_arithmetic(toy_ds: xr.Dataset) -> None:
-    result = evaluate_expression(
-        "sqrt(eastward_wind**2 + northward_wind**2)", toy_ds
-    )
+    result = evaluate_expression("sqrt(eastward_wind**2 + northward_wind**2)", toy_ds)
     np.testing.assert_allclose(result.values, 5.0, rtol=1e-5)
 
 

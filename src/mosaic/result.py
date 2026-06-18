@@ -1,4 +1,5 @@
 """Container for the result of a pipeline run."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

@@ -24,6 +24,7 @@ production we use a thin :class:`mosaic.sources.local.LocalNetcdfSource`
 pointing at the file fetched here. The ``sic`` subcommand exposes a
 ``--source-uri`` option to point at any HTTP/HTTPS NetCDF endpoint.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -109,7 +110,7 @@ def _existing_cache_files(cache_dir: Path) -> list[Path]:
 def _download_to(url: str, dest: Path) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_suffix(dest.suffix + ".part")
-    with urllib.request.urlopen(url) as resp, tmp.open("wb") as fh:  # noqa: S310 (audited URL)
+    with urllib.request.urlopen(url) as resp, tmp.open("wb") as fh:
         shutil.copyfileobj(resp, fh)
     os.replace(tmp, dest)
 
@@ -146,7 +147,9 @@ def _do_sic(*, nsidc_dir: Path, source_uri: str | None, dry_run: bool) -> None:
         raise typer.Exit(code=2)
 
     if target.exists():
-        typer.secho(f"[skip] {target} already exists — delete to re-download", fg=typer.colors.YELLOW)
+        typer.secho(
+            f"[skip] {target} already exists — delete to re-download", fg=typer.colors.YELLOW
+        )
         return
     _download_to(source_uri, target)
     typer.secho(f"[ok] NSIDC SIC fetched to {target}", fg=typer.colors.GREEN)
@@ -181,13 +184,10 @@ def _do_surface(*, cache_dir: Path, dataset: str, dry_run: bool) -> None:
         hours=ERA5_HOURS,
         cache_dir=str(cache_dir),
     )
-    query = SourceQuery(
-        bbox=CS3_BBOX, time_start=CS3_TIME_START, time_stop=CS3_TIME_STOP
-    )
+    query = SourceQuery(bbox=CS3_BBOX, time_start=CS3_TIME_START, time_stop=CS3_TIME_STOP)
     ds = src.fetch(query)
     typer.secho(
-        f"[ok] era5_surface — cache_hit={ds.attrs.get('mosaic_cache_hit')} "
-        f"shape={dict(ds.sizes)}",
+        f"[ok] era5_surface — cache_hit={ds.attrs.get('mosaic_cache_hit')} shape={dict(ds.sizes)}",
         fg=typer.colors.GREEN,
     )
 
@@ -248,9 +248,7 @@ def surface(
 
 @app.command(help="Compute (or fetch from URL) the September SIC climatology.")
 def climatology(
-    out_path: Path = typer.Option(
-        DEFAULT_CLIM_DIR / "arctic_sic_climatology_sep.nc", "--out-path"
-    ),
+    out_path: Path = typer.Option(DEFAULT_CLIM_DIR / "arctic_sic_climatology_sep.nc", "--out-path"),
     download_url: str = typer.Option(None, "--download-url"),
     dry_run: bool = typer.Option(False, "--dry-run"),
 ) -> None:
@@ -261,9 +259,7 @@ def climatology(
 def fetch_all(
     cache_dir: Path = typer.Option(DEFAULT_CACHE_DIR, "--cache-dir"),
     nsidc_dir: Path = typer.Option(DEFAULT_NSIDC_DIR, "--nsidc-dir"),
-    clim_out: Path = typer.Option(
-        DEFAULT_CLIM_DIR / "arctic_sic_climatology_sep.nc", "--clim-out"
-    ),
+    clim_out: Path = typer.Option(DEFAULT_CLIM_DIR / "arctic_sic_climatology_sep.nc", "--clim-out"),
     source_uri: str = typer.Option(None, "--source-uri"),
     download_url: str = typer.Option(None, "--download-url"),
     dry_run: bool = typer.Option(False, "--dry-run"),
@@ -285,9 +281,7 @@ def fetch_all(
 def populate_fixtures(
     cache_dir: Path = typer.Option(DEFAULT_CACHE_DIR, "--cache-dir"),
     nsidc_dir: Path = typer.Option(DEFAULT_NSIDC_DIR, "--nsidc-dir"),
-    clim_out: Path = typer.Option(
-        DEFAULT_CLIM_DIR / "arctic_sic_climatology_sep.nc", "--clim-out"
-    ),
+    clim_out: Path = typer.Option(DEFAULT_CLIM_DIR / "arctic_sic_climatology_sep.nc", "--clim-out"),
     fixtures_dir: Path = typer.Option(DEFAULT_FIXTURES_DIR, "--fixtures-dir"),
 ) -> None:
     cache_dir = _resolve_repo_path(cache_dir)
@@ -302,10 +296,10 @@ def populate_fixtures(
         build_all(fixtures_dir)
 
     src_to_dst = {
-        fixtures_dir / "nsidc_arctic_sic_2012-09.nc":
-            nsidc_dir / "g02202_v4_sic_2012-09.nc",
-        fixtures_dir / "era5_arctic_surface_2012-09.nc":
-            cache_dir / "era5" / "era5_surface_offline.nc",
+        fixtures_dir / "nsidc_arctic_sic_2012-09.nc": nsidc_dir / "g02202_v4_sic_2012-09.nc",
+        fixtures_dir / "era5_arctic_surface_2012-09.nc": cache_dir
+        / "era5"
+        / "era5_surface_offline.nc",
         fixtures_dir / "arctic_sic_climatology_sep.nc": clim_out,
     }
     for src, dst in src_to_dst.items():

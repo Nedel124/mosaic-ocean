@@ -1,11 +1,11 @@
 """Tests for the pipeline schema (mosaic._spec)."""
+
 from __future__ import annotations
 
 import pytest
 from pydantic import ValidationError
 
 from mosaic._spec import PipelineSpec
-
 
 VALID_DOC: dict = {
     "apiVersion": "mosaic/v1",
@@ -38,7 +38,10 @@ def test_canonical_yaml_is_deterministic() -> None:
 def test_bbox_must_be_valid() -> None:
     bad = dict(VALID_DOC)
     bad["spec"] = dict(bad["spec"])
-    bad["spec"]["domain"] = {"bbox": [10, 60, 5, 50], "time": {"start": "2022-06-01", "stop": "2022-06-02"}}
+    bad["spec"]["domain"] = {
+        "bbox": [10, 60, 5, 50],
+        "time": {"start": "2022-06-01", "stop": "2022-06-02"},
+    }
     with pytest.raises(ValidationError):
         PipelineSpec.model_validate(bad)
 

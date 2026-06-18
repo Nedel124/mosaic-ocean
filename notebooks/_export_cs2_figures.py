@@ -4,6 +4,7 @@ Reuses the same plotting recipes that the companion notebook would use,
 but writes publication-quality files for direct inclusion in the paper's
 Results section.
 """
+
 from __future__ import annotations
 
 import json
@@ -31,8 +32,10 @@ def _save(fig: plt.Figure, stem: str) -> None:
 def main() -> None:
     if not OUTPUT_ZARR.exists():
         from tests.fixtures.build_cs2_fixtures import build_all
+
         build_all(REPO_ROOT / "tests" / "fixtures" / "cs2")
         import mosaic as ms
+
         ms.run(str(REPO_ROOT / "tests" / "fixtures" / "cs2_offline.yaml"))
 
     ds = xr.open_zarr(OUTPUT_ZARR, consolidated=True)
@@ -50,19 +53,29 @@ def main() -> None:
     pmin = float(ds["air_pressure_at_mean_sea_level"].min())
     pmax = float(ds["air_pressure_at_mean_sea_level"].max())
     step = 3
-    for ax, t in zip(axes, panel_days):
+    for ax, t in zip(axes, panel_days, strict=False):
         p = ds["air_pressure_at_mean_sea_level"].isel(time=t)
         u = ds["eastward_wind"].isel(time=t)
         v = ds["northward_wind"].isel(time=t)
         pcm = ax.pcolormesh(
-            p.lon, p.lat, p.values, cmap="viridis_r",
-            vmin=pmin, vmax=pmax, shading="auto",
+            p.lon,
+            p.lat,
+            p.values,
+            cmap="viridis_r",
+            vmin=pmin,
+            vmax=pmax,
+            shading="auto",
         )
         ax.contour(p.lon, p.lat, p.values, levels=[980, 990, 1000], colors="white", linewidths=0.5)
         ax.quiver(
-            u.lon[::step], u.lat[::step],
-            u.values[::step, ::step], v.values[::step, ::step],
-            scale=300, color="k", alpha=0.55, width=0.004,
+            u.lon[::step],
+            u.lat[::step],
+            u.values[::step, ::step],
+            v.values[::step, ::step],
+            scale=300,
+            color="k",
+            alpha=0.55,
+            width=0.004,
         )
         ax.plot(track["LON"], track["LAT"], "r-", lw=1.0, alpha=0.8)
         ax.plot(track["LON"], track["LAT"], "r.", ms=3)
@@ -77,10 +90,15 @@ def main() -> None:
     fig, axes = plt.subplots(1, 4, figsize=(13, 3.4), sharey=True)
     sst = ds["sea_surface_temperature"] - 273.15
     vmin, vmax = float(sst.min()), float(sst.max())
-    for ax, t in zip(axes, panel_days):
+    for ax, t in zip(axes, panel_days, strict=False):
         pcm = ax.pcolormesh(
-            sst.lon, sst.lat, sst.isel(time=t).values,
-            cmap="RdYlBu_r", vmin=vmin, vmax=vmax, shading="auto",
+            sst.lon,
+            sst.lat,
+            sst.isel(time=t).values,
+            cmap="RdYlBu_r",
+            vmin=vmin,
+            vmax=vmax,
+            shading="auto",
         )
         ax.plot(track["LON"], track["LAT"], "k-", lw=0.8, alpha=0.6)
         ax.plot(track["LON"], track["LAT"], "k.", ms=2)
@@ -95,12 +113,21 @@ def main() -> None:
     fig, ax = plt.subplots(figsize=(7.5, 4.0))
     intensity_max = ds["storm_intensity"].max(dim=("lat", "lon"))
     flagged_per_day = ds["hurricane_zone"].astype("uint8").sum(dim=("lat", "lon"))
-    ax.plot(intensity_max.time, intensity_max.values, color="tab:blue",
-            label="max storm_intensity (hPa)")
+    ax.plot(
+        intensity_max.time,
+        intensity_max.values,
+        color="tab:blue",
+        label="max storm_intensity (hPa)",
+    )
     ax2 = ax.twinx()
-    ax2.bar(flagged_per_day.time, flagged_per_day.values,
-            color="tab:red", alpha=0.4, width=0.7,
-            label="flagged cells")
+    ax2.bar(
+        flagged_per_day.time,
+        flagged_per_day.values,
+        color="tab:red",
+        alpha=0.4,
+        width=0.7,
+        label="flagged cells",
+    )
     ax.set_xlabel("date")
     ax.set_ylabel("max storm_intensity (hPa)", color="tab:blue")
     ax2.set_ylabel("flagged cells (count)", color="tab:red")
@@ -110,7 +137,7 @@ def main() -> None:
 
     # --- Hurricane-zone mask snapshots --------------------------------
     fig, axes = plt.subplots(1, 4, figsize=(13, 3.4), sharey=True)
-    for ax, t in zip(axes, panel_days):
+    for ax, t in zip(axes, panel_days, strict=False):
         m = ds["hurricane_zone"].isel(time=t).astype("uint8")
         ax.pcolormesh(m.lon, m.lat, m.values, cmap="Greys", vmin=0, vmax=1, shading="auto")
         ax.plot(track["LON"], track["LAT"], "r-", lw=0.8, alpha=0.7)

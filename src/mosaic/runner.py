@@ -4,6 +4,7 @@ This module wires together the source layer, harmonizer, QC engine, exporter
 and provenance recorder. It is the single place where a :class:`PipelineSpec`
 becomes a :class:`Result`.
 """
+
 from __future__ import annotations
 
 import json
@@ -18,8 +19,8 @@ from mosaic.harmonize import Harmonizer
 from mosaic.prov import build_stac_item, dataset_content_hash, pipeline_hash
 from mosaic.quality import QCEngine
 from mosaic.result import Result
-from mosaic.sources.base import Source, SourceQuery, registry as default_registry
-
+from mosaic.sources.base import Source, SourceQuery
+from mosaic.sources.base import registry as default_registry
 
 # ---------------------------------------------------------------------------
 # public entry points
@@ -56,9 +57,7 @@ def execute(
     qc_engine = QCEngine(rules=spec.spec.qc.rules)
     qc_ds, qc_report = qc_engine.apply(harmonized.dataset)
 
-    fused_ds, derive_report = apply_derived(
-        qc_ds, list(spec.spec.fuse.derived), strict=True
-    )
+    fused_ds, derive_report = apply_derived(qc_ds, list(spec.spec.fuse.derived), strict=True)
 
     output_path = _export(fused_ds, spec)
 

@@ -22,6 +22,7 @@ MOSAIC does not capture credentials; it passes through whatever the
 toolbox finds. Cache hits do not need credentials, which is why CI and
 reviewers can re-run a pipeline with shipped cached subsets.
 """
+
 from __future__ import annotations
 
 import hashlib

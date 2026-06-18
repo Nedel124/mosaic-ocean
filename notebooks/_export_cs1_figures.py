@@ -4,6 +4,7 @@ Reuses the same plotting logic as ``cs1_gulf_of_riga_upwelling.ipynb`` but
 writes publication-quality files instead of inline PNGs. Intended to feed
 directly into the paper's Results section.
 """
+
 from __future__ import annotations
 
 import json
@@ -30,8 +31,10 @@ def _save(fig: plt.Figure, stem: str) -> None:
 def main() -> None:
     if not OUTPUT_ZARR.exists():
         from tests.fixtures.build_cs1_gulf_of_riga_fixtures import build_all
+
         build_all(REPO_ROOT / "tests" / "fixtures" / "cs1_gulf_of_riga")
         import mosaic as ms
+
         ms.run(str(REPO_ROOT / "tests" / "fixtures" / "cs1_gulf_of_riga_offline.yaml"))
 
     ds = xr.open_zarr(OUTPUT_ZARR, consolidated=True)
@@ -47,11 +50,16 @@ def main() -> None:
     fig, axes = plt.subplots(1, 4, figsize=(13, 3.4), sharey=True)
     sst_c = ds["sea_surface_temperature"] - 273.15
     vmin, vmax = float(sst_c.min()), float(sst_c.max())
-    for ax, t in zip(axes, panel_days):
+    for ax, t in zip(axes, panel_days, strict=False):
         sst = sst_c.isel(time=t)
         pcm = ax.pcolormesh(
-            sst.lon, sst.lat, sst.values,
-            cmap="RdYlBu_r", vmin=vmin, vmax=vmax, shading="auto",
+            sst.lon,
+            sst.lat,
+            sst.values,
+            cmap="RdYlBu_r",
+            vmin=vmin,
+            vmax=vmax,
+            shading="auto",
         )
         ax.set_title(str(ds["time"].isel(time=t).values)[:10])
         ax.set_xlabel("lon (°E)")
@@ -63,11 +71,16 @@ def main() -> None:
     # --- Spatial SST anomaly ------------------------------------------
     fig, axes = plt.subplots(1, 4, figsize=(13, 3.4), sharey=True)
     ano_max = float(np.abs(ds["sst_spatial_anomaly"]).max())
-    for ax, t in zip(axes, panel_days):
+    for ax, t in zip(axes, panel_days, strict=False):
         ano = ds["sst_spatial_anomaly"].isel(time=t)
         pcm = ax.pcolormesh(
-            ano.lon, ano.lat, ano.values,
-            cmap="RdBu_r", vmin=-ano_max, vmax=ano_max, shading="auto",
+            ano.lon,
+            ano.lat,
+            ano.values,
+            cmap="RdBu_r",
+            vmin=-ano_max,
+            vmax=ano_max,
+            shading="auto",
         )
         ax.contour(ano.lon, ano.lat, ano.values, levels=[-2.0], colors="k", linewidths=0.6)
         ax.set_title(str(ds["time"].isel(time=t).values)[:10])
@@ -78,14 +91,13 @@ def main() -> None:
     _save(fig, "fig_cs1_riga_spatial_anomaly_2021-07-16")
 
     # --- SST-only upwelling mask on 2021-07-16 ------------------------
-    t16_idx = int(np.argmin(np.abs(
-        pd.to_datetime(ds["time"].values) - pd.Timestamp("2021-07-16")
-    )))
+    t16_idx = int(np.argmin(np.abs(pd.to_datetime(ds["time"].values) - pd.Timestamp("2021-07-16"))))
     mask_sst = ds["upwelling_mask_sst"].isel(time=t16_idx).astype("uint8")
 
     fig, ax = plt.subplots(figsize=(6, 5))
-    ax.pcolormesh(mask_sst.lon, mask_sst.lat, mask_sst.values,
-                  cmap="Greys", vmin=0, vmax=1, shading="auto")
+    ax.pcolormesh(
+        mask_sst.lon, mask_sst.lat, mask_sst.values, cmap="Greys", vmin=0, vmax=1, shading="auto"
+    )
     ax.set_title("CS1 — SST-only upwelling mask, 16 July 2021")
     ax.set_xlabel("lon (°E)")
     ax.set_ylabel("lat (°N)")
@@ -99,20 +111,28 @@ def main() -> None:
     # left: spatial anomaly with SST-mask contour
     ax = axes[0]
     ano_lim = float(np.abs(ano_16).max())
-    pcm = ax.pcolormesh(ano_16.lon, ano_16.lat, ano_16.values,
-                        cmap="RdBu_r", vmin=-ano_lim, vmax=ano_lim, shading="auto")
-    ax.contour(mask_sst.lon, mask_sst.lat, mask_sst.values, levels=[0.5],
-               colors="k", linewidths=1.0)
+    pcm = ax.pcolormesh(
+        ano_16.lon,
+        ano_16.lat,
+        ano_16.values,
+        cmap="RdBu_r",
+        vmin=-ano_lim,
+        vmax=ano_lim,
+        shading="auto",
+    )
+    ax.contour(
+        mask_sst.lon, mask_sst.lat, mask_sst.values, levels=[0.5], colors="k", linewidths=1.0
+    )
     fig.colorbar(pcm, ax=ax, label="SST anomaly (K)")
     ax.set_title("Spatial SST anomaly + SST-mask contour")
     ax.set_xlabel("lon (°E)")
     ax.set_ylabel("lat (°N)")
     # right: wind speed with SST-mask contour
     ax = axes[1]
-    pcm2 = ax.pcolormesh(wsp_16.lon, wsp_16.lat, wsp_16.values,
-                         cmap="YlOrRd", shading="auto")
-    ax.contour(mask_sst.lon, mask_sst.lat, mask_sst.values, levels=[0.5],
-               colors="k", linewidths=1.0)
+    pcm2 = ax.pcolormesh(wsp_16.lon, wsp_16.lat, wsp_16.values, cmap="YlOrRd", shading="auto")
+    ax.contour(
+        mask_sst.lon, mask_sst.lat, mask_sst.values, levels=[0.5], colors="k", linewidths=1.0
+    )
     fig.colorbar(pcm2, ax=ax, label="wind speed (m s⁻¹)")
     ax.set_title("ERA5 daily mean wind speed + SST-mask contour")
     ax.set_xlabel("lon (°E)")
@@ -126,7 +146,7 @@ def main() -> None:
     times = ds["time"].values
 
     fig, ax = plt.subplots(figsize=(8, 3.6))
-    ax.plot(times, sst_counts,  marker="o", label="SST-only mask")
+    ax.plot(times, sst_counts, marker="o", label="SST-only mask")
     ax.plot(times, wind_counts, marker="s", label="SST–wind intersection")
     ax.set_ylabel("flagged cells")
     ax.set_xlabel("date")

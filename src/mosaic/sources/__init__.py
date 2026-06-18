@@ -14,6 +14,7 @@ their *network* paths import ``copernicusmarine`` / ``cdsapi`` lazily inside
 :meth:`fetch`, so users without those extras can still load and validate
 pipelines, and run cache-only fixtures.
 """
+
 from __future__ import annotations
 
 from mosaic.sources.base import Source, SourceQuery, SourceRegistry, register, registry

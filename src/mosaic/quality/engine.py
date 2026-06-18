@@ -14,6 +14,7 @@ The engine applies a small, deterministic set of rules per variable:
 The result is a mask DataArray (1 = pass, 0 = flagged) attached as a CF
 ``ancillary_variables`` companion. Statistics are returned for provenance.
 """
+
 from __future__ import annotations
 
 from collections.abc import Mapping

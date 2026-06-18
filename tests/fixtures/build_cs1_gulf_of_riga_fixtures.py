@@ -20,6 +20,7 @@ Run as a script::
 
 Or call :func:`build_all` from a pytest conftest.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -68,8 +69,10 @@ def _cold_patch(lon: np.ndarray, lat: np.ndarray, strength: float) -> np.ndarray
     """Synthetic cold-water patch in the southern/eastern Gulf of Riga."""
     # Centre placed toward the eastern/southern Gulf, matching the interpretation
     # in the paper: a compact SST anomaly patch rather than a basin-wide cooling.
-    return -3.2 * strength * np.exp(
-        -(((lat[:, None] - 57.15) ** 2) / 0.055 + ((lon[None, :] - 24.05) ** 2) / 0.18)
+    return (
+        -3.2
+        * strength
+        * np.exp(-(((lat[:, None] - 57.15) ** 2) / 0.055 + ((lon[None, :] - 24.05) ** 2) / 0.18))
     )
 
 
@@ -194,7 +197,11 @@ def build_era5_wind(out_path: Path) -> Path:
         coords={
             "time": ("time", time, {"standard_name": "time"}),
             "latitude": ("latitude", lat, {"standard_name": "latitude", "units": "degrees_north"}),
-            "longitude": ("longitude", lon, {"standard_name": "longitude", "units": "degrees_east"}),
+            "longitude": (
+                "longitude",
+                lon,
+                {"standard_name": "longitude", "units": "degrees_east"},
+            ),
         },
         attrs={
             "title": "MOSAIC CS1 fixture — synthetic Gulf of Riga ERA5-like wind",
@@ -217,9 +224,7 @@ def build_era5_wind(out_path: Path) -> Path:
 def build_all(fixtures_dir: Path | None = None) -> dict[str, Path]:
     """Materialise all CS1 Gulf of Riga fixtures under ``fixtures_dir``."""
     fixtures_dir = (
-        Path(fixtures_dir)
-        if fixtures_dir
-        else Path(__file__).parent / "data" / "cs1_gulf_of_riga"
+        Path(fixtures_dir) if fixtures_dir else Path(__file__).parent / "data" / "cs1_gulf_of_riga"
     )
     fixtures_dir.mkdir(parents=True, exist_ok=True)
     return {

@@ -1,4 +1,5 @@
 """Tests for the provenance subsystem."""
+
 from __future__ import annotations
 
 import numpy as np

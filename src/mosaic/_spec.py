@@ -5,6 +5,7 @@ description of a reproducible run. The same file, fed to :class:`mosaic.runner`
 under the same lock file, must produce identical outputs (modulo numerical
 non-determinism that we explicitly bound).
 """
+
 from __future__ import annotations
 
 from datetime import date, datetime
@@ -73,7 +74,9 @@ class Domain(BaseModel):
 
     @field_validator("bbox")
     @classmethod
-    def _validate_bbox(cls, v: tuple[float, float, float, float]) -> tuple[float, float, float, float]:
+    def _validate_bbox(
+        cls, v: tuple[float, float, float, float]
+    ) -> tuple[float, float, float, float]:
         w, s, e, n = v
         if not (-180.0 <= w <= 180.0 and -180.0 <= e <= 180.0):
             raise ValueError("bbox longitudes must lie within [-180, 180]")
@@ -111,7 +114,7 @@ class TargetGrid(BaseModel):
     crs: str = "EPSG:4326"
 
     @model_validator(mode="after")
-    def _exclusive(self) -> "TargetGrid":
+    def _exclusive(self) -> TargetGrid:
         if self.from_source is None and self.resolution_deg is None:
             raise ValueError("target_grid must specify either 'from' or 'resolution_deg'")
         if self.from_source is not None and self.resolution_deg is not None:
@@ -121,7 +124,9 @@ class TargetGrid(BaseModel):
 
 class HarmonizeSpec(BaseModel):
     target_grid: TargetGrid | None = None
-    time_alignment: Literal["daily_mean", "hourly_mean", "instantaneous", "nearest"] = "instantaneous"
+    time_alignment: Literal["daily_mean", "hourly_mean", "instantaneous", "nearest"] = (
+        "instantaneous"
+    )
     cf_dictionary: str | None = None  # path to YAML extension dictionary
     overrides: dict[str, dict[str, Any]] = Field(default_factory=dict)
 
@@ -148,7 +153,7 @@ class QCSpec(BaseModel):
     rules: dict[str, InlineQCRule] = Field(default_factory=dict)
 
     @model_validator(mode="after")
-    def _at_least_one(self) -> "QCSpec":
+    def _at_least_one(self) -> QCSpec:
         if self.rules_file is None and not self.rules:
             # QC is optional; an empty QCSpec is fine.
             pass
@@ -227,7 +232,7 @@ class PipelineSpec(BaseModel):
 
     # ---------------------------------------------------------------- helpers
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "PipelineSpec":
+    def from_yaml(cls, path: str | Path) -> PipelineSpec:
         """Parse and validate a pipeline YAML file."""
         import yaml  # local import keeps optional deps light at module-import time
 

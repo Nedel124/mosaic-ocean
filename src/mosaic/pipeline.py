@@ -5,6 +5,7 @@ serialised to YAML or executed directly. The class is deliberately thin: it
 delegates execution to :func:`mosaic.runner.execute`. Tests cover both routes
 (YAML-on-disk and programmatic).
 """
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -62,7 +63,7 @@ class Pipeline:
         time_start: str,
         time_stop: str,
         resolution: str = "1D",
-    ) -> "Pipeline":
+    ) -> Pipeline:
         self._domain = Domain(
             bbox=bbox,
             time=TimeWindow(start=time_start, stop=time_stop, resolution=resolution),
@@ -70,7 +71,7 @@ class Pipeline:
         return self
 
     # ----------------------------------------------------------------- sources
-    def add_source(self, src: Source) -> "Pipeline":
+    def add_source(self, src: Source) -> Pipeline:
         spec = SourceSpec(id=src.source_id, plugin=src.plugin_name, params=dict(src.params))
         self._sources.append(spec)
         self._source_objects.append(src)
@@ -84,7 +85,7 @@ class Pipeline:
         time_alignment: str = "instantaneous",
         target_grid_from: str | None = None,
         overrides: dict[str, dict[str, Any]] | None = None,
-    ) -> "Pipeline":
+    ) -> Pipeline:
         target = None
         if target_grid_from is not None:
             from mosaic._spec import TargetGrid
@@ -99,13 +100,15 @@ class Pipeline:
         return self
 
     # --------------------------------------------------------------------- qc
-    def qc(self, *, rules: Mapping[str, Mapping[str, Any]] | None = None) -> "Pipeline":
+    def qc(self, *, rules: Mapping[str, Mapping[str, Any]] | None = None) -> Pipeline:
         if rules:
-            self._qc = QCSpec(rules={var: InlineQCRule.model_validate(spec) for var, spec in rules.items()})
+            self._qc = QCSpec(
+                rules={var: InlineQCRule.model_validate(spec) for var, spec in rules.items()}
+            )
         return self
 
     # ------------------------------------------------------------------- derive
-    def derive(self, name: str, expression: str) -> "Pipeline":
+    def derive(self, name: str, expression: str) -> Pipeline:
         """Add a derived variable evaluated against the harmonized dataset."""
         self._fuse = FuseSpec(
             derived=[*self._fuse.derived, DerivedVariable(name=name, expression=expression)]
@@ -113,7 +116,7 @@ class Pipeline:
         return self
 
     # ------------------------------------------------------------------ export
-    def export(self, *, path: str, format: str = "zarr", provenance: bool = True) -> "Pipeline":
+    def export(self, *, path: str, format: str = "zarr", provenance: bool = True) -> Pipeline:
         self._export = ExportSpec(format=format, path=path, provenance=provenance)  # type: ignore[arg-type]
         return self
 

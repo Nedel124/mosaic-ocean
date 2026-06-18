@@ -5,8 +5,10 @@ emulate the layout of the real CMEMS / ERA5 / climatology subsets. We
 materialise those fixtures on first run so the repo doesn't carry binary
 artefacts.
 """
+
 from __future__ import annotations
 
+import importlib.util
 from pathlib import Path
 
 import pytest
@@ -16,9 +18,6 @@ CS1_DIR = FIXTURES_ROOT / "cs1"
 CS2_DIR = FIXTURES_ROOT / "cs2"
 CS3_DIR = FIXTURES_ROOT / "cs3"
 
-
-import importlib.util
-import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]

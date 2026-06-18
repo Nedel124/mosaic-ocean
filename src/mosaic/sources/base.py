@@ -8,6 +8,7 @@ The plugin layer is intentionally tiny: registration is just a string → class
 mapping. Networked connectors live in optional extras and register themselves
 on import.
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

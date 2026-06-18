@@ -17,6 +17,7 @@ It verifies that:
 * STAC/provenance metadata include pipeline and content hashes,
 * two consecutive runs reproduce the same ``mosaic:content_hash``.
 """
+
 from __future__ import annotations
 
 import shutil
@@ -26,7 +27,6 @@ import pytest
 import xarray as xr
 
 import mosaic as ms
-
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 PIPELINE = "tests/fixtures/cs1_gulf_of_riga_offline.yaml"

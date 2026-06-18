@@ -8,6 +8,7 @@ Run from the repository root:
 
     python notebooks/_build_cs1_notebook.py
 """
+
 from __future__ import annotations
 
 from pathlib import Path
