@@ -42,7 +42,7 @@ Run a pipeline declared in YAML:
 ```bash
 mosaic validate pipelines/example_minimal.yaml
 mosaic run     pipelines/example_minimal.yaml
-mosaic prov show out/example.zarr/stac.json
+mosaic prov show out/example.zarr.stac.json
 ```
 
 Or build it programmatically:
@@ -52,8 +52,9 @@ import mosaic as ms
 
 pipe = (
     ms.Pipeline(name="demo")
+    .domain(bbox=(14.0, 54.0, 22.0, 60.0), time_start="2022-06-01", time_stop="2022-06-07")
     .add_source(ms.sources.DummySource(variables=["sst", "u10"]))
-    .harmonize(cf_dictionary="configs/cf_baltic.yaml", time_freq="1D")
+    .harmonize(cf_dictionary="configs/cf_baltic.yaml")
     .qc(rules={"sst": {"type": "range", "min": -2.0, "max": 35.0}})
     .export(path="out/demo.zarr")
 )
@@ -85,7 +86,7 @@ spec:
   export:
     format: zarr
     path: out/example.zarr
-  provenance: true
+    provenance: true
 ```
 
 ## Authentication for connectors
@@ -112,8 +113,7 @@ A more detailed comparison is in `RELATED_WORK.md` of the companion paper.
 
 Every run produces:
 
-- a STAC Item with content hashes for inputs and outputs,
-- a `mosaic.lock` file pinning all dependencies and configuration versions,
+- a STAC Item with content hashes for inputs and outputs (saved as `<output>.stac.json`),
 - a deterministic re-run guarantee for non-stochastic stages.
 
 ### CS1 — Gulf of Riga coastal upwelling, July 2021
@@ -146,7 +146,7 @@ If you use MOSAIC, please cite the software via Zenodo (DOI assigned at release)
 
 ## Contributing
 
-Issues and PRs welcome on [GitHub](https://github.com/gagigr/mosaic-ocean).
+Issues and PRs welcome on [GitHub](https://github.com/Nedel124/mosaic-ocean).
 
 ## Funding & acknowledgments
 
