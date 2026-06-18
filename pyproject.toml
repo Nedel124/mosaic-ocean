@@ -74,10 +74,10 @@ dev = [
 docs = ["mkdocs>=1.6", "mkdocs-material>=9.5", "mkdocstrings[python]>=0.25"]
 
 [project.urls]
-Homepage = "https://github.com/gagigr/mosaic-ocean"
-Repository = "https://github.com/gagigr/mosaic-ocean"
-Issues = "https://github.com/gagigr/mosaic-ocean/issues"
-Documentation = "https://gagigr.github.io/mosaic-ocean"
+Homepage = "https://github.com/Nedel124/mosaic-ocean"
+Repository = "https://github.com/Nedel124/mosaic-ocean"
+Issues = "https://github.com/Nedel124/mosaic-ocean/issues"
+Documentation = "https://Nedel124.github.io/mosaic-ocean"
 
 [project.scripts]
 mosaic = "mosaic.cli:app"
