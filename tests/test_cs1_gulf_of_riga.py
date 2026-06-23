@@ -2,11 +2,12 @@
 
 Runs :file:`tests/fixtures/cs1_gulf_of_riga_offline.yaml` against deterministic
 local NetCDF fixtures shaped like the live CMEMS SST and ERA5 10 m wind inputs
-used in the CS1 Gulf of Riga analysis. The test does not try to reproduce the
-exact live-data counts reported in the paper (183 SST-anomaly cells and 3 cells
-for the pixel-wise SST--wind intersection). Those values belong to the live
-CMEMS--ERA5 notebook/pipeline. Instead, the offline test verifies that the same
-processing logic is executable and reproducible without external credentials.
+used in the CS1 Gulf of Riga analysis. The offline fixture is not intended to
+reproduce the exact live-data counts reported in the paper, including 183
+SST-anomaly cells and an empty pixel-wise SST--wind intersection on
+2021-07-16. Those values belong to the live CMEMS--ERA5 workflow. The fixture
+test verifies deterministic execution, semantic harmonisation, derived-variable
+generation, and content-hash reproducibility without external credentials.
 
 It verifies that:
 

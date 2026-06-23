@@ -2,12 +2,11 @@
 # LocalNetcdfSource pointing at deterministic local fixtures. Used by the
 # test-suite and by reviewers without CMEMS/CDS credentials.
 #
-# The live CS1 notebook/pipeline reports the geophysical counts from real
-# CMEMS/ERA5 products, e.g. the 183 SST-anomaly cells and the 3 cells retained
-# by the strict pixel-wise SST--wind intersection on 2021-07-16. This offline
-# fixture is not expected to reproduce those exact live-data counts. Its role is
-# to verify that the same processing logic is runnable, hashable and
-# deterministic without external services.
+# This offline fixture is intended to validate deterministic execution of the
+# declared CS1 processing path. It is not designed to reproduce the exact
+# live-data diagnostics reported for 16 July 2021, including the 183
+# SST-anomaly cells and the empty pixel-wise SST--wind intersection obtained
+# from the live CMEMS--ERA5 workflow.
 apiVersion: mosaic/v1
 kind: Pipeline
 

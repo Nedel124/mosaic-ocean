@@ -19,6 +19,9 @@ control, and content-addressable provenance recorded as STAC metadata.
 - Runs a configurable pipeline (`ingest → QC → harmonize → fuse → export`).
 - Records full provenance as a STAC Item with the `mosaic` extension
   (pipeline hash, content hash, mapping accuracy, QC statistics, environment).
+  This is the same metric the companion paper calls *semantic resolution
+  rate*; the code, tests and STAC field name (`mapping_accuracy`) keep the
+  original implementation-level name.
 - Exports to Zarr (default) or NetCDF-CF.
 - Ships a CLI (`mosaic run pipeline.yaml`) and a Python API.
 
@@ -126,16 +129,22 @@ A more detailed comparison is in `RELATED_WORK.md` of the companion paper.
 
 ## Reproducibility
 
-Every run produces:
-
-- a STAC Item with content hashes for inputs and outputs,
-- a `mosaic.lock` file pinning all dependencies and configuration versions,
-- a deterministic re-run guarantee for non-stochastic stages.
+Every run produces a STAC Item with `mosaic:pipeline_hash` and
+`mosaic:content_hash`, giving a deterministic re-run guarantee for
+non-stochastic stages. See `docs/reproducibility.md` for exactly what each
+hash covers, what it does not cover (e.g. live vs. offline-fixture content
+hashes are *not* expected to match), and the current state of environment
+pinning.
 
 ### CS1 — Gulf of Riga coastal upwelling, July 2021
 
 The first case study ships end-to-end. Two reproduction paths are
-supported, both producing the same `mosaic:content_hash`:
+supported and share the same processing logic and `mosaic:pipeline_hash`,
+but **not** the same `mosaic:content_hash`: the synthetic fixture path
+(b) is a deterministic stand-in for the live CMEMS/ERA5 inputs, not a
+byte-for-byte replica of them, so its data — and therefore its content
+hash — differs from path (a). Each path is independently reproducible
+across repeated runs (same inputs in, same `mosaic:content_hash` out).
 
 ```bash
 # (a) live data — needs free CMEMS + CDS accounts (see docs/credentials.md)
