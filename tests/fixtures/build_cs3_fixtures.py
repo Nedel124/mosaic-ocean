@@ -15,7 +15,6 @@ Run as a script::
 
     python tests/fixtures/build_cs3_fixtures.py
 """
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -65,8 +64,8 @@ def build_nsidc_sic(out_path: Path) -> Path:
         # Centre near 75°N, 150°W, intruding north as the window progresses.
         cy = 73.5 + 0.6 * strength
         cx = -150.0
-        retreat = (
-            -0.55 * strength * np.exp(-(((LAT2D - cy) ** 2) / 4.0 + ((LON2D - cx) ** 2) / 70.0))
+        retreat = -0.55 * strength * np.exp(
+            -(((LAT2D - cy) ** 2) / 4.0 + ((LON2D - cx) ** 2) / 70.0)
         )
         noise = rng.standard_normal(baseline.shape).astype("float32") * 0.03
         sic[ti] = np.clip(baseline + retreat.astype("float32") + noise, 0.0, 1.0)
@@ -125,21 +124,17 @@ def build_era5_surface(out_path: Path) -> Path:
     warm_pulse = np.clip(days / max(len(time) - 1, 1), 0.0, 1.0)
     for ti, strength in enumerate(warm_pulse):
         # Warm anomaly co-located with the retreating ice tongue.
-        warm = (
-            3.0
-            * strength
-            * np.exp(-(((LAT2D - 74.0) ** 2) / 6.0 + ((LON2D - 150.0 * -1) ** 2) / 80.0))
+        warm = 3.0 * strength * np.exp(
+            -(((LAT2D - 74.0) ** 2) / 6.0 + ((LON2D - 150.0 * -1) ** 2) / 80.0)
         )
         t2m[ti] = (
-            base_t
-            + warm.astype("float32")
+            base_t + warm.astype("float32")
             + rng.standard_normal(base_t.shape).astype("float32") * 0.4
         ).astype("float32")
         # MSLP: climatological ~1013 hPa with mild high-pressure ridge that
         # promotes the warm air advection.
         msl[ti] = (
-            1013.0
-            + 4.0 * np.cos(np.deg2rad((lat[:, None] - 75.0) * 9.0))
+            1013.0 + 4.0 * np.cos(np.deg2rad((lat[:, None] - 75.0) * 9.0))
             + rng.standard_normal(base_t.shape).astype("float32") * 0.3
         ).astype("float32")
 
@@ -148,11 +143,7 @@ def build_era5_surface(out_path: Path) -> Path:
             "t2m": (
                 ("time", "lat", "lon"),
                 t2m,
-                {
-                    "standard_name": "air_temperature",
-                    "long_name": "2 m air temperature",
-                    "units": "K",
-                },
+                {"standard_name": "air_temperature", "long_name": "2 m air temperature", "units": "K"},
             ),
             "msl": (
                 ("time", "lat", "lon"),

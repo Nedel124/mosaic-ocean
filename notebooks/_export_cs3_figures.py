@@ -1,5 +1,4 @@
 """Re-render CS3 figures to ``docs/figures/cs3/*.png`` (and *.pdf)."""
-
 from __future__ import annotations
 
 import json
@@ -25,10 +24,8 @@ def _save(fig: plt.Figure, stem: str) -> None:
 def main() -> None:
     if not OUTPUT_ZARR.exists():
         from tests.fixtures.build_cs3_fixtures import build_all
-
         build_all(REPO_ROOT / "tests" / "fixtures" / "cs3")
         import mosaic as ms
-
         ms.run(str(REPO_ROOT / "tests" / "fixtures" / "cs3_offline.yaml"))
 
     ds = xr.open_zarr(OUTPUT_ZARR, consolidated=True)
@@ -42,16 +39,11 @@ def main() -> None:
 
     # --- SIC evolution ------------------------------------------------
     fig, axes = plt.subplots(1, 4, figsize=(13, 3.4), sharey=True)
-    for ax, t in zip(axes, panel_days, strict=False):
+    for ax, t in zip(axes, panel_days):
         sic = ds["sea_ice_area_fraction"].isel(time=t)
         pcm = ax.pcolormesh(
-            sic.lon,
-            sic.lat,
-            sic.values,
-            cmap="Blues_r",
-            vmin=0.0,
-            vmax=1.0,
-            shading="auto",
+            sic.lon, sic.lat, sic.values,
+            cmap="Blues_r", vmin=0.0, vmax=1.0, shading="auto",
         )
         ax.contour(sic.lon, sic.lat, sic.values, levels=[0.15, 0.5], colors="k", linewidths=0.6)
         ax.set_title(str(ds["time"].isel(time=t).values)[:10])
@@ -64,16 +56,11 @@ def main() -> None:
     # --- SIC anomaly --------------------------------------------------
     fig, axes = plt.subplots(1, 4, figsize=(13, 3.4), sharey=True)
     amax = float(np.abs(ds["sic_anomaly"]).max())
-    for ax, t in zip(axes, panel_days, strict=False):
+    for ax, t in zip(axes, panel_days):
         a = ds["sic_anomaly"].isel(time=t)
         pcm = ax.pcolormesh(
-            a.lon,
-            a.lat,
-            a.values,
-            cmap="RdBu",
-            vmin=-amax,
-            vmax=amax,
-            shading="auto",
+            a.lon, a.lat, a.values,
+            cmap="RdBu", vmin=-amax, vmax=amax, shading="auto",
         )
         ax.contour(a.lon, a.lat, a.values, levels=[-0.3], colors="k", linewidths=0.6)
         ax.set_title(str(ds["time"].isel(time=t).values)[:10])
@@ -85,7 +72,7 @@ def main() -> None:
 
     # --- Melt-pond proxy ----------------------------------------------
     fig, axes = plt.subplots(1, 4, figsize=(13, 3.4), sharey=True)
-    for ax, t in zip(axes, panel_days, strict=False):
+    for ax, t in zip(axes, panel_days):
         m = ds["melt_pond_proxy"].isel(time=t).astype("uint8")
         ax.pcolormesh(m.lon, m.lat, m.values, cmap="Greys", vmin=0, vmax=1, shading="auto")
         ax.set_title(str(ds["time"].isel(time=t).values)[:10])
@@ -100,16 +87,15 @@ def main() -> None:
     dlon = float(np.diff(ds["sea_ice_area_fraction"].lon.values).mean())
     dlat = float(np.diff(lat).mean())
     cell_area = (dlon * 111.0) * (dlat * 111.0) * np.cos(np.deg2rad(lat))[:, None]
-    sic_area_km2 = (ds["sea_ice_area_fraction"] * cell_area[None, :, :]).sum(
-        dim=("lat", "lon")
-    ).values * 1e-6  # in million km²
+    sic_area_km2 = (
+        ds["sea_ice_area_fraction"] * cell_area[None, :, :]
+    ).sum(dim=("lat", "lon")).values * 1e-6  # in million km²
     flagged = ds["melt_pond_proxy"].astype("uint8").sum(dim=("lat", "lon")).values
     fig, ax1 = plt.subplots(figsize=(7.5, 3.6))
     ax2 = ax1.twinx()
     ax1.plot(ds["time"].values, sic_area_km2, color="tab:blue", label="ice area (10⁶ km²)")
-    ax2.bar(
-        ds["time"].values, flagged, color="tab:red", alpha=0.4, width=0.7, label="melt-pond cells"
-    )
+    ax2.bar(ds["time"].values, flagged, color="tab:red", alpha=0.4, width=0.7,
+            label="melt-pond cells")
     ax1.set_ylabel("ice area (10⁶ km²)", color="tab:blue")
     ax2.set_ylabel("melt-pond proxy cells", color="tab:red")
     ax1.set_xlabel("date")

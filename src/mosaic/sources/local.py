@@ -12,7 +12,6 @@ the bbox / time / variables requested by the pipeline. It serves two roles:
    the bytes came from the network this run or from disk — only the
    ``source_uri`` field differs.
 """
-
 from __future__ import annotations
 
 from datetime import datetime

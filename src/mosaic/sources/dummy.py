@@ -5,10 +5,9 @@ plausible CF-compliant coordinates and a couple of named variables (default:
 ``sst`` and ``u10``).  Determinism is essential — the dummy source feeds the
 provenance round-trip tests.
 """
-
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -24,7 +23,7 @@ class DummySource(Source):
     plugin_name = "dummy"
     plugin_version = "0.1.0"
 
-    DEFAULTS: ClassVar[dict[str, dict[str, Any]]] = {
+    DEFAULTS: dict[str, dict[str, Any]] = {
         "sst": {
             "amplitude": 5.0,
             "offset": 15.0,
@@ -60,9 +59,7 @@ class DummySource(Source):
         seed: int = 0,
         **params: Any,
     ) -> None:
-        super().__init__(
-            source_id, variables=variables, resolution_deg=resolution_deg, seed=seed, **params
-        )
+        super().__init__(source_id, variables=variables, resolution_deg=resolution_deg, seed=seed, **params)
         self.variables = list(variables or ["sst", "u10"])
         self.resolution_deg = float(resolution_deg)
         self.seed = int(seed)
@@ -86,9 +83,7 @@ class DummySource(Source):
         data_vars: dict[str, Any] = {}
 
         for var in self.variables:
-            spec = self.DEFAULTS.get(
-                var, {"amplitude": 1.0, "offset": 0.0, "standard_name": var, "units": "1"}
-            )
+            spec = self.DEFAULTS.get(var, {"amplitude": 1.0, "offset": 0.0, "standard_name": var, "units": "1"})
             base = self._smooth_field(rng, len(time), len(lat), len(lon))
             arr = (spec["amplitude"] * base + spec["offset"]).astype("float32")
             data_vars[var] = (

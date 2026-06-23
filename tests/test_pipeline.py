@@ -1,5 +1,4 @@
 """End-to-end tests for the programmatic Pipeline builder and the YAML runner."""
-
 from __future__ import annotations
 
 import shutil
@@ -35,7 +34,9 @@ def test_programmatic_pipeline_runs(tmp_workdir: Path) -> None:
     assert sidecar.exists()
 
 
-def test_runner_from_yaml_minimal_example(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_runner_from_yaml_minimal_example(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Run the shipped example_minimal.yaml from a temp working directory."""
     repo_root = Path(__file__).resolve().parents[1]
     work = tmp_path / "run"

@@ -13,7 +13,6 @@ The algorithm is the heart of the methods section in the paper:
     where ``n_heur_confident`` only counts heuristic matches whose score
     exceeds ``confidence_threshold``.
 """
-
 from __future__ import annotations
 
 from dataclasses import dataclass, field

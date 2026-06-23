@@ -13,7 +13,6 @@ Run as a script::
 
     python tests/fixtures/build_cs2_fixtures.py
 """
-
 from __future__ import annotations
 
 import csv
@@ -53,7 +52,8 @@ def _grid() -> tuple[np.ndarray, np.ndarray, pd.DatetimeIndex]:
     return lon, lat, time
 
 
-def _great_circle_km(lat1: np.ndarray, lon1: np.ndarray, lat2: float, lon2: float) -> np.ndarray:
+def _great_circle_km(lat1: np.ndarray, lon1: np.ndarray,
+                     lat2: float, lon2: float) -> np.ndarray:
     """Haversine distance, broadcasting (lat1, lon1) vs scalar (lat2, lon2)."""
     R = 6371.0
     phi1 = np.deg2rad(lat1)
@@ -88,7 +88,7 @@ def build_cmems_sst(out_path: Path) -> Path:
             d_km = _great_circle_km(LAT2D, LON2D, TRACK_LAT[k], TRACK_LON[k])
             # Stronger cooling close to track, ~3 K dip with 150 km e-fold.
             decay = max(0.0, 1.0 - (ti - k) * 0.12)  # wake fades over a few days
-            cold += -3.0 * decay * np.exp(-((d_km / 150.0) ** 2))
+            cold += -3.0 * decay * np.exp(-(d_km / 150.0) ** 2)
         noise = rng.standard_normal(base.shape).astype("float32") * 0.10
         sst[ti] = base + cold.astype("float32") + noise
 
@@ -154,7 +154,7 @@ def build_era5_atmos(out_path: Path) -> Path:
         # Pressure depression: gaussian with depth (p_base - cmin) and
         # ~250 km e-fold. Add small random noise.
         depth = p_base - cmin
-        p_anomaly = -depth * np.exp(-((d_km / 250.0) ** 2))
+        p_anomaly = -depth * np.exp(-(d_km / 250.0) ** 2)
         p_field = p_base + p_anomaly + rng.standard_normal(d_km.shape).astype("float32") * 0.5
 
         # Cyclonic (counter-clockwise) tangential winds around the centre,
@@ -168,25 +168,27 @@ def build_era5_atmos(out_path: Path) -> Path:
         r_km = np.hypot(dx_km, dy_km)
         # Azimuthal speed profile: peak ~60 km, decay to background outside ~400 km.
         peak = 8.0 + 0.7 * depth  # m/s contribution from storm
-        v_t = peak * (r_km / 60.0) * np.exp(-((r_km / 250.0) ** 2))
+        v_t = peak * (r_km / 60.0) * np.exp(-(r_km / 250.0) ** 2)
         # Cyclonic rotation in the Northern Hemisphere: u_r = -v_t * sin(theta),
         # v_r = v_t * cos(theta), where theta = atan2(dy, dx).
         theta = np.arctan2(dy_km, dx_km)
         u_storm = -v_t * np.sin(theta)
         v_storm = v_t * np.cos(theta)
-        u[ti] = (u_base + u_storm + rng.standard_normal(d_km.shape).astype("float32") * 0.4).astype(
-            "float32"
-        )
-        v[ti] = (v_base + v_storm + rng.standard_normal(d_km.shape).astype("float32") * 0.4).astype(
-            "float32"
-        )
+        u[ti] = (
+            u_base + u_storm
+            + rng.standard_normal(d_km.shape).astype("float32") * 0.4
+        ).astype("float32")
+        v[ti] = (
+            v_base + v_storm
+            + rng.standard_normal(d_km.shape).astype("float32") * 0.4
+        ).astype("float32")
 
         p[ti] = p_field.astype("float32")
 
         # Synthetic precipitation: localised heavy rain in the storm core,
         # daily-accumulated mm. Heavier on landfall day.
         rain_intensity = 60.0 if abs(cmin - 955.0) < 5.0 else 25.0 + 0.4 * depth
-        tp_field = rain_intensity * np.exp(-((d_km / 80.0) ** 2))
+        tp_field = rain_intensity * np.exp(-(d_km / 80.0) ** 2)
         tp_field += np.maximum(rng.standard_normal(d_km.shape).astype("float32") * 0.5, 0.0)
         tp[ti] = tp_field.astype("float32")
 

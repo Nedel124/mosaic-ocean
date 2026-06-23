@@ -7,7 +7,6 @@ Public API surface:
 The :class:`Pipeline` is the primary entry point for the programmatic builder.
 The :func:`run` helper executes a pipeline declared in a YAML file.
 """
-
 from __future__ import annotations
 
 from importlib import metadata as _metadata

@@ -8,9 +8,8 @@ This package implements the three-tier matching algorithm described in
    (``cf_baltic.yaml`` / ``cf_atlantic.yaml`` / ``cf_arctic.yaml``),
 3. Heuristic fuzzy match with a confidence score.
 """
-
 from __future__ import annotations
 
-from mosaic.harmonize.harmonizer import HarmonizationResult, Harmonizer, MappingDecision
+from mosaic.harmonize.harmonizer import Harmonizer, HarmonizationResult, MappingDecision
 
 __all__ = ["HarmonizationResult", "Harmonizer", "MappingDecision"]

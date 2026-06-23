@@ -1,5 +1,4 @@
 """Tests for the three-tier semantic harmonizer."""
-
 from __future__ import annotations
 
 import textwrap
@@ -33,14 +32,11 @@ def test_cf_match_via_existing_standard_name() -> None:
 
 def test_dictionary_match_via_alias(tmp_path: Path) -> None:
     cf = tmp_path / "cf.yaml"
-    cf.write_text(
-        textwrap.dedent("""
+    cf.write_text(textwrap.dedent("""
     aliases:
       sst: sea_surface_temperature
     units: {}
-    """),
-        encoding="utf-8",
-    )
+    """), encoding="utf-8")
     h = Harmonizer(cf_dictionary=cf)
     ds = _ds("sst", units="degree_Celsius")
     result = h.harmonize({"src": ds})
@@ -59,12 +55,10 @@ def test_unresolved_falls_into_unresolved_bucket() -> None:
 
 def test_mapping_accuracy_is_a_fraction() -> None:
     h = Harmonizer()
-    ds = xr.merge(
-        [
-            _ds("sst", standard_name="sea_surface_temperature"),
-            _ds("garbage_name_zzzz", units="?"),
-        ]
-    )
+    ds = xr.merge([
+        _ds("sst", standard_name="sea_surface_temperature"),
+        _ds("garbage_name_zzzz", units="?"),
+    ])
     result = h.harmonize({"src": ds})
     assert result.mapping_accuracy == pytest.approx(0.5)
 

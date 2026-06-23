@@ -8,7 +8,6 @@ Run from the repository root:
 
     python notebooks/_build_cs1_notebook.py
 """
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -158,7 +157,7 @@ def build() -> nbf.NotebookNode:
             "for ax, t_idx in zip(axes, panel_days):\n"
             "    sst = sst_c.isel(time=t_idx)\n"
             "    pcm = ax.pcolormesh(\n"
-            "        sst.lon, sst.lat, sst.values,\n"
+            "        sst.longitude, sst.latitude, sst.values,\n"
             "        cmap='RdYlBu_r', vmin=vmin, vmax=vmax, shading='auto',\n"
             "    )\n"
             "    ax.set_title(str(ds['time'].isel(time=t_idx).values)[:10])\n"
@@ -188,11 +187,11 @@ def build() -> nbf.NotebookNode:
             "for ax, t_idx in zip(axes, panel_days):\n"
             "    ano = ds['sst_spatial_anomaly'].isel(time=t_idx)\n"
             "    pcm = ax.pcolormesh(\n"
-            "        ano.lon, ano.lat, ano.values,\n"
+            "        ano.longitude, ano.latitude, ano.values,\n"
             "        cmap='RdBu_r', vmin=-ano_max, vmax=ano_max, shading='auto',\n"
             "    )\n"
             "    ax.contour(\n"
-            "        ano.lon, ano.lat, ano.values,\n"
+            "        ano.longitude, ano.latitude, ano.values,\n"
             "        levels=[-2.0], colors='k', linewidths=0.6,\n"
             "    )\n"
             "    ax.set_title(str(ds['time'].isel(time=t_idx).values)[:10])\n"
@@ -228,11 +227,11 @@ def build() -> nbf.NotebookNode:
             "\n"
             "fig, ax = plt.subplots(figsize=(7.5, 5.0))\n"
             "pcm = ax.pcolormesh(\n"
-            "    sst_day.lon, sst_day.lat, sst_day.values,\n"
+            "    sst_day.longitude, sst_day.latitude, sst_day.values,\n"
             "    cmap='RdYlBu_r', shading='auto',\n"
             ")\n"
             "ax.quiver(\n"
-            "    u.lon[::step], u.lat[::step],\n"
+            "    u.longitude[::step], u.latitude[::step],\n"
             "    u.values[::step, ::step], v.values[::step, ::step],\n"
             "    scale=40, color='k', alpha=0.75,\n"
             ")\n"
@@ -267,7 +266,7 @@ def build() -> nbf.NotebookNode:
             "    ['SST-only mask (anomaly < -2 K)',\n"
             "     'SST–wind intersection (anomaly < -2 K & wind > 4 m s⁻¹)'],\n"
             "):\n"
-            "    ax.pcolormesh(m.lon, m.lat, m.values, cmap='Greys', vmin=0, vmax=1, shading='auto')\n"
+            "    ax.pcolormesh(m.longitude, m.latitude, m.values, cmap='Greys', vmin=0, vmax=1, shading='auto')\n"
             "    ax.set_title(title)\n"
             "    ax.set_xlabel('lon (°E)')\n"
             "axes[0].set_ylabel('lat (°N)')\n"
@@ -292,8 +291,8 @@ def build() -> nbf.NotebookNode:
     )
     cells.append(
         code(
-            "sst_counts  = ds['upwelling_mask_sst'].astype('uint8').sum(dim=('lat', 'lon')).values\n"
-            "wind_counts = ds['upwelling_mask_sst_wind'].astype('uint8').sum(dim=('lat', 'lon')).values\n"
+            "sst_counts  = ds['upwelling_mask_sst'].astype('uint8').sum(dim=('latitude', 'longitude')).values\n"
+            "wind_counts = ds['upwelling_mask_sst_wind'].astype('uint8').sum(dim=('latitude', 'longitude')).values\n"
             "times = ds['time'].values\n"
             "\n"
             "fig, ax = plt.subplots(figsize=(8, 3.6))\n"

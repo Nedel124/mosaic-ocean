@@ -11,7 +11,6 @@ Subcommands::
 The CLI is built on Typer. We keep it deliberately small because the canonical
 interface for reproducible runs is the YAML file.
 """
-
 from __future__ import annotations
 
 import json

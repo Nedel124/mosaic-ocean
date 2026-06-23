@@ -1,0 +1,16 @@
+{
+  "case_study": "CS1 — Gulf of Riga coastal upwelling, July 2021",
+  "pipeline": "pipelines/cs1_gulf_of_riga_upwelling.yaml",
+  "offline_fixture": "tests/fixtures/cs1_gulf_of_riga_offline.yaml",
+  "domain_bbox": [22.0, 56.5, 24.8, 58.5],
+  "time_window": ["2021-07-12", "2021-07-22"],
+  "live_sst_only_mask_cells_2021-07-16": 183,
+  "live_sst_wind_intersection_cells_2021-07-16": 0,
+  "figures": [
+    "fig_cs1_riga_sst_evolution.png",
+    "fig_cs1_riga_spatial_anomaly_2021-07-16.png",
+    "fig_cs1_riga_mask_sst_2021-07-16.png",
+    "fig_cs1_riga_mask_comparison_2021-07-16_v2.png",
+    "fig_cs1_riga_flagged_cells_timeseries.png"
+  ]
+}

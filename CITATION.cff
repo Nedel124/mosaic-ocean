@@ -1,75 +1,41 @@
-```yaml
 cff-version: 1.2.0
 message: "If you use MOSAIC in research, please cite both the software and the accompanying paper."
 title: "MOSAIC: Multi-source Ocean Sensor And model Integration Catalogue"
 abstract: >-
-  MOSAIC is a lightweight, open-source Python framework for declarative,
-  reproducible, and provenance-aware integration of heterogeneous oceanographic
-  data, including satellite, in situ, reanalysis, and model-derived products.
-  It represents end-to-end workflows as YAML pipeline specifications, validates
-  them with Pydantic, executes them over an xarray data model, and exports
-  harmonised analysis-ready datasets as Zarr or NetCDF-CF with companion STAC
-  provenance records. MOSAIC supports semantic harmonisation, quality control,
-  derived-variable evaluation, and content-addressable provenance based on
-  BLAKE3 hashes of both the canonical pipeline and the resulting dataset.
+  A lightweight, open-source Python library for declarative, reproducible
+  integration of heterogeneous oceanographic data (satellite, model, in-situ),
+  with automatic semantic harmonization, quality control, and content-addressable
+  provenance recorded as STAC metadata.
 type: software
 authors:
   - family-names: Gic-Grusza
     given-names: Gabriela
     orcid: "https://orcid.org/0000-0002-5542-118X"
     affiliation: "Faculty of Oceanography and Geography, University of Gdansk, Poland"
-    email: "gabriela.gic-grusza@ug.edu.pl"
+    email: gabriela.gic-grusza@ug.edu.pl
   - family-names: Bugaj
     given-names: Adrian
-    affiliation: "Independent researcher, Poland"
-  - family-names: Dudzik
-    given-names: S.
-    affiliation: "Faculty of Electrical Engineering, Częstochowa University of Technology, Poland"
-    orcid: "https://orcid.org/0000-0002-9559-7115"
-  - family-names: Szeląg
-    given-names: P.
-    affiliation: "Faculty of Electrical Engineering, Częstochowa University of Technology, Poland"
-    orcid: "https://orcid.org/0000-0002-9528-3263"
-
 repository-code: "https://github.com/gagigr/mosaic-ocean"
 url: "https://github.com/gagigr/mosaic-ocean"
 license: MIT
 version: 0.1.0.dev0
 date-released: "2026-04-25"
-
 keywords:
   - oceanography
-  - ocean data integration
-  - scientific workflow
-  - reproducibility
-  - semantic harmonisation
-  - provenance tracking
+  - data integration
   - FAIR
   - STAC
-  - Zarr
+  - reproducibility
   - xarray
-  - Digital Twin Ocean
-
 preferred-citation:
   type: article
-  title: "An Open Python Framework for Reproducible Multi-Source Ocean Data Integration: Three Case Studies from the Baltic, Atlantic and Arctic"
+  title: "An Open Python Framework for Reproducible Multi-Source Ocean Data Integration"
   authors:
+    - family-names: Bugaj
+      given-names: Adrian
     - family-names: Gic-Grusza
       given-names: Gabriela
       orcid: "https://orcid.org/0000-0002-5542-118X"
-      affiliation: "Faculty of Oceanography and Geography, University of Gdansk, Poland"
-    - family-names: Bugaj
-      given-names: Adrian
-      affiliation: "Independent researcher, Poland"
-    - family-names: Dudzik
-      given-names: S.
-      affiliation: "Faculty of Electrical Engineering, Częstochowa University of Technology, Poland"
-      orcid: "https://orcid.org/0000-0002-9559-7115"
-    - family-names: Szeląg
-      given-names: P.
-      affiliation: "Faculty of Electrical Engineering, Częstochowa University of Technology, Poland"
-      orcid: "https://orcid.org/0000-0002-9528-3263"
   journal: "Computers & Geosciences"
   year: 2026
   notes: "Manuscript in preparation."
-```

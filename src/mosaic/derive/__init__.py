@@ -25,7 +25,6 @@ Examples
             (sea_surface_temperature - sea_surface_temperature_climatology < -2.0)
             & (wind_speed > 4.0)
 """
-
 from __future__ import annotations
 
 from mosaic.derive.evaluator import (

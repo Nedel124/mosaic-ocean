@@ -17,12 +17,11 @@ Time discretisation
 ERA5 returns hourly data; the request expands a YAML time window into
 explicit (year, month, day, time) lists, which is what the CDS API expects.
 """
-
 from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -171,7 +170,9 @@ def _iso(value: datetime | str) -> str:
     return str(value)
 
 
-def _expand_calendar(start: datetime, stop: datetime) -> tuple[list[str], list[str], list[str]]:
+def _expand_calendar(
+    start: datetime, stop: datetime
+) -> tuple[list[str], list[str], list[str]]:
     """Return sorted year / month / day lists covering [start, stop]."""
     if stop < start:
         start, stop = stop, start

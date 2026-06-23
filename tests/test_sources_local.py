@@ -1,5 +1,4 @@
 """Tests for LocalNetcdfSource — bbox/time slicing, dim autodetection."""
-
 from __future__ import annotations
 
 from datetime import datetime

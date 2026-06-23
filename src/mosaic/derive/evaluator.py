@@ -6,7 +6,6 @@ expressions we publish in domain dictionaries (e.g. ``upwelling_mask``,
 ``hurricane_mpi``, ``sic_loss_rate``) without giving pipelines arbitrary
 code-execution.
 """
-
 from __future__ import annotations
 
 import ast
@@ -209,7 +208,9 @@ def _eval_node(node: ast.AST, ds: xr.Dataset) -> Any:
         for op_node, comp in zip(node.ops, node.comparators, strict=True):
             op = _CMP_OPS.get(type(op_node))
             if op is None:
-                raise DerivationError(f"unsupported comparison operator: {type(op_node).__name__}")
+                raise DerivationError(
+                    f"unsupported comparison operator: {type(op_node).__name__}"
+                )
             right = _eval_node(comp, ds)
             piece = op(left, right)
             result = piece if result is None else (result & piece)
@@ -237,7 +238,8 @@ def _eval_node(node: ast.AST, ds: xr.Dataset) -> Any:
         fname = node.func.id
         if fname not in _ALLOWED_FUNCS:
             raise DerivationError(
-                f"function '{fname}' is not in the allowed list: {sorted(_ALLOWED_FUNCS)}"
+                f"function '{fname}' is not in the allowed list: "
+                f"{sorted(_ALLOWED_FUNCS)}"
             )
         args = [_eval_node(a, ds) for a in node.args]
         if node.keywords:
@@ -256,5 +258,6 @@ def _resolve_name(name: str, ds: xr.Dataset) -> Any:
         return _ALLOWED_CONSTS[name]
     available = sorted(list(ds.data_vars) + list(ds.coords))
     raise DerivationError(
-        f"unknown name '{name}' in expression; available data_vars/coords: {available}"
+        f"unknown name '{name}' in expression; "
+        f"available data_vars/coords: {available}"
     )

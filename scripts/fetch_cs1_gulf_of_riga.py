@@ -29,7 +29,6 @@ Usage
     python scripts/fetch_cs1_gulf_of_riga.py manifest
     python scripts/fetch_cs1_gulf_of_riga.py verify
 """
-
 from __future__ import annotations
 
 import hashlib
@@ -37,6 +36,7 @@ import importlib.util
 import json
 import os
 import shutil
+import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -165,10 +165,13 @@ def _do_sst(*, cache_dir: Path, dataset_id: str, dry_run: bool) -> None:
         variables=[CMEMS_SST_VARIABLE],
         cache_dir=str(cache_dir),
     )
-    query = SourceQuery(bbox=CS1_BBOX, time_start=CS1_TIME_START, time_stop=CS1_TIME_STOP)
+    query = SourceQuery(
+        bbox=CS1_BBOX, time_start=CS1_TIME_START, time_stop=CS1_TIME_STOP
+    )
     ds = src.fetch(query)
     typer.secho(
-        f"[ok] cmems_sst — cache_hit={ds.attrs.get('mosaic_cache_hit')} shape={dict(ds.sizes)}",
+        f"[ok] cmems_sst — cache_hit={ds.attrs.get('mosaic_cache_hit')} "
+        f"shape={dict(ds.sizes)}",
         fg=typer.colors.GREEN,
     )
 
@@ -216,10 +219,13 @@ def _do_wind(*, cache_dir: Path, dataset: str, dry_run: bool) -> None:
         hours=ERA5_HOURS,
         cache_dir=str(cache_dir),
     )
-    query = SourceQuery(bbox=CS1_BBOX, time_start=CS1_TIME_START, time_stop=CS1_TIME_STOP)
+    query = SourceQuery(
+        bbox=CS1_BBOX, time_start=CS1_TIME_START, time_stop=CS1_TIME_STOP
+    )
     ds = src.fetch(query)
     typer.secho(
-        f"[ok] era5_wind — cache_hit={ds.attrs.get('mosaic_cache_hit')} shape={dict(ds.sizes)}",
+        f"[ok] era5_wind — cache_hit={ds.attrs.get('mosaic_cache_hit')} "
+        f"shape={dict(ds.sizes)}",
         fg=typer.colors.GREEN,
     )
 
@@ -281,12 +287,8 @@ def populate_fixtures(
         expected = {k: Path(v) for k, v in built.items()}
 
     src_to_dst = {
-        expected["cmems_sst"]: cache_dir
-        / DEFAULT_CMEMS_CACHE_SUBDIR
-        / "cmems_gulf_of_riga_sst_2021-07.nc",
-        expected["era5_wind"]: cache_dir
-        / DEFAULT_ERA5_CACHE_SUBDIR
-        / "era5_gulf_of_riga_wind_2021-07.nc",
+        expected["cmems_sst"]: cache_dir / DEFAULT_CMEMS_CACHE_SUBDIR / "cmems_gulf_of_riga_sst_2021-07.nc",
+        expected["era5_wind"]: cache_dir / DEFAULT_ERA5_CACHE_SUBDIR / "era5_gulf_of_riga_wind_2021-07.nc",
     }
 
     for src, dst in src_to_dst.items():
@@ -385,7 +387,7 @@ def _download_to(url: str, dest: Path) -> None:
 
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_suffix(dest.suffix + ".part")
-    with urllib.request.urlopen(url) as resp, tmp.open("wb") as fh:
+    with urllib.request.urlopen(url) as resp, tmp.open("wb") as fh:  # noqa: S310 (audited URL)
         shutil.copyfileobj(resp, fh)
     os.replace(tmp, dest)
 

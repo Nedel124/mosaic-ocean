@@ -1,5 +1,4 @@
 from pathlib import Path
-
 import matplotlib.pyplot as plt
 import xarray as xr
 
@@ -59,15 +58,5 @@ plt.savefig(fig_dir / "fig_cs1_gulf_of_riga_flagged_cells_timeseries.png", dpi=3
 plt.close()
 
 print("Saved figures to:", fig_dir.resolve())
-print(
-    "SST-mask cells on",
-    date,
-    ":",
-    int(ds["upwelling_mask_sst"].sel(time=date).astype("uint8").sum()),
-)
-print(
-    "SST-wind cells on",
-    date,
-    ":",
-    int(ds["upwelling_mask_sst_wind"].sel(time=date).astype("uint8").sum()),
-)
+print("SST-mask cells on", date, ":", int(ds["upwelling_mask_sst"].sel(time=date).astype("uint8").sum()))
+print("SST-wind cells on", date, ":", int(ds["upwelling_mask_sst_wind"].sel(time=date).astype("uint8").sum()))

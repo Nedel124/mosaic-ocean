@@ -109,12 +109,10 @@ select = [
     "SIM",           # simplifications
     "RUF",           # ruff-specific
 ]
-ignore = ["E501", "B008"]
+ignore = ["E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["B", "SIM"]
-"notebooks/**" = ["RUF001"]
-"scripts/**" = ["RUF001", "RUF002"]
 
 [tool.mypy]
 python_version = "3.11"

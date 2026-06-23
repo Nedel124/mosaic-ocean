@@ -1,5 +1,4 @@
 """End-to-end test for CS3 — Arctic sea-ice retreat, September 2012."""
-
 from __future__ import annotations
 
 import shutil
@@ -9,6 +8,7 @@ import pytest
 import xarray as xr
 
 import mosaic as ms
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 

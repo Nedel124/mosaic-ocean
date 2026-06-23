@@ -7,7 +7,6 @@ The tests run entirely offline:
   fixtures into the cache layout the live pipeline expects.
 * ``manifest`` / ``verify`` are exercised as a round-trip.
 """
-
 from __future__ import annotations
 
 import json
@@ -74,10 +73,8 @@ def test_populate_fixtures_then_manifest_and_verify(repo_in_tmp: Path) -> None:
         fetch_cs1.app,
         [
             "populate-fixtures",
-            "--cache-dir",
-            str(cache_dir),
-            "--fixtures-dir",
-            str(fixtures_dir),
+            "--cache-dir", str(cache_dir),
+            "--fixtures-dir", str(fixtures_dir),
         ],
     )
     assert result.exit_code == 0, result.output
@@ -90,10 +87,8 @@ def test_populate_fixtures_then_manifest_and_verify(repo_in_tmp: Path) -> None:
         fetch_cs1.app,
         [
             "manifest",
-            "--cache-dir",
-            str(cache_dir),
-            "--out",
-            str(manifest_path),
+            "--cache-dir", str(cache_dir),
+            "--out", str(manifest_path),
         ],
     )
     assert result.exit_code == 0, result.output
@@ -119,20 +114,16 @@ def test_verify_detects_tampering(repo_in_tmp: Path) -> None:
         fetch_cs1.app,
         [
             "populate-fixtures",
-            "--cache-dir",
-            str(cache_dir),
-            "--fixtures-dir",
-            str(fixtures_dir),
+            "--cache-dir", str(cache_dir),
+            "--fixtures-dir", str(fixtures_dir),
         ],
     )
     runner.invoke(
         fetch_cs1.app,
         [
             "manifest",
-            "--cache-dir",
-            str(cache_dir),
-            "--out",
-            str(manifest_path),
+            "--cache-dir", str(cache_dir),
+            "--out", str(manifest_path),
         ],
     )
 
