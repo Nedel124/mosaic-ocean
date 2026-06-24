@@ -53,8 +53,13 @@ def execute(
     )
     harmonized = harmonizer.harmonize(fetched)
 
+    aligned_ds = _apply_time_alignment(
+        harmonized.dataset,
+        spec.spec.harmonize.time_alignment,
+    )
+
     qc_engine = QCEngine(rules=spec.spec.qc.rules)
-    qc_ds, qc_report = qc_engine.apply(harmonized.dataset)
+    qc_ds, qc_report = qc_engine.apply(aligned_ds)
 
     fused_ds, derive_report = apply_derived(
         qc_ds, list(spec.spec.fuse.derived), strict=True
@@ -110,6 +115,26 @@ def _build_sources(
         cls = default_registry.get(s.plugin)
         out[s.id] = cls(source_id=s.id, **dict(s.params))
     return out
+
+
+def _apply_time_alignment(ds: xr.Dataset, mode: str) -> xr.Dataset:
+    """Apply the declared temporal alignment to time-indexed variables."""
+    if mode == "instantaneous":
+        return ds
+
+    if "time" not in ds.coords:
+        return ds
+
+    if mode == "daily_mean":
+        return ds.resample(time="1D").mean(keep_attrs=True)
+
+    if mode == "hourly_mean":
+        return ds.resample(time="1h").mean(keep_attrs=True)
+
+    if mode == "nearest":
+        return ds
+
+    raise ValueError(f"unsupported time alignment mode: {mode}")
 
 
 def _export(ds: xr.Dataset, spec: PipelineSpec) -> str:

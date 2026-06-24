@@ -118,9 +118,13 @@ def apply_derived(
         if not isinstance(result, xr.DataArray):
             # promote scalars / ndarray results to DataArray broadcast over time
             result = xr.DataArray(result)
-        result.attrs.setdefault("long_name", spec.name)
-        result.attrs.setdefault("mosaic:expression", spec.expression)
-        result.attrs.setdefault("mosaic:derived", "true")
+        # Force-assign rather than setdefault: xarray's default keep_attrs
+        # policy carries attrs over from an upstream operand (e.g. a
+        # comparison against an already-derived variable), which would
+        # otherwise leave stale provenance from that operand in place.
+        result.attrs["long_name"] = spec.name
+        result.attrs["mosaic:expression"] = spec.expression
+        result.attrs["mosaic:derived"] = "true"
         out = out.assign({spec.name: result})
         report.derived.append(spec.name)
 
