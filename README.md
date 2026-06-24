@@ -7,7 +7,7 @@ integration of heterogeneous oceanographic data — satellite, numerical model,
 and in-situ observations — with automatic semantic harmonization, quality
 control, and content-addressable provenance recorded as STAC metadata.
 
-> **Status:** alpha (`v0.1.0.dev0`). Public API may still change.
+> **Status:** alpha (`v1.0.0`). Public API may still change.
 
 ## What MOSAIC does
 
