@@ -275,7 +275,12 @@ def populate_fixtures(
     }
 
     if not all(p.exists() for p in expected.values()):
-        builder = REPO_ROOT / "tests" / "fixtures" / "build_cs1_gulf_of_riga_fixtures.py"
+        # Resolved from this module's own file location, not REPO_ROOT: tests
+        # monkeypatch REPO_ROOT to an empty tmp_path to sandbox cache/manifest
+        # writes, but the builder script itself always lives in the real
+        # checkout and must still be found.
+        module_repo_root = Path(__file__).resolve().parents[1]
+        builder = module_repo_root / "tests" / "fixtures" / "build_cs1_gulf_of_riga_fixtures.py"
         if not builder.exists():
             typer.secho(
                 f"[err] missing fixtures and builder not found: {builder}",
