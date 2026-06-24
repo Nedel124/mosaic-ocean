@@ -7,22 +7,16 @@ artefacts.
 """
 from __future__ import annotations
 
+import importlib.util
 from pathlib import Path
 
 import pytest
 
 FIXTURES_ROOT = Path(__file__).parent / "fixtures"
-CS1_DIR = FIXTURES_ROOT / "cs1"
-CS2_DIR = FIXTURES_ROOT / "cs2"
-CS3_DIR = FIXTURES_ROOT / "cs3"
-
-
-import importlib.util
-import pytest
-
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CS1_DIR = REPO_ROOT / "tests" / "fixtures" / "cs1_gulf_of_riga"
+CS2_DIR = FIXTURES_ROOT / "cs2"
+CS3_DIR = FIXTURES_ROOT / "cs3"
 
 
 @pytest.fixture(scope="session")

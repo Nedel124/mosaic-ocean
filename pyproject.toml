@@ -114,6 +114,10 @@ ignore = ["E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["B", "SIM"]
+# typer's documented pattern is `param: T = typer.Argument(...)` /
+# `typer.Option(...)` — the call builds a CLI parameter descriptor, not a
+# mutable default that accumulates state across calls.
+"src/mosaic/cli.py" = ["B008"]
 
 [tool.mypy]
 python_version = "3.11"

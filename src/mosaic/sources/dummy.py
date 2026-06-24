@@ -7,7 +7,7 @@ provenance round-trip tests.
 """
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 
 import numpy as np
 import pandas as pd
@@ -23,7 +23,7 @@ class DummySource(Source):
     plugin_name = "dummy"
     plugin_version = "0.1.0"
 
-    DEFAULTS: dict[str, dict[str, Any]] = {
+    DEFAULTS: ClassVar[dict[str, dict[str, Any]]] = {
         "sst": {
             "amplitude": 5.0,
             "offset": 15.0,

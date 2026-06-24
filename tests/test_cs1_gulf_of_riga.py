@@ -28,7 +28,6 @@ import xarray as xr
 
 import mosaic as ms
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 PIPELINE = "tests/fixtures/cs1_gulf_of_riga_offline.yaml"
 TARGET_DATE = "2021-07-16"

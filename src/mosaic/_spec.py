@@ -111,7 +111,7 @@ class TargetGrid(BaseModel):
     crs: str = "EPSG:4326"
 
     @model_validator(mode="after")
-    def _exclusive(self) -> "TargetGrid":
+    def _exclusive(self) -> TargetGrid:
         if self.from_source is None and self.resolution_deg is None:
             raise ValueError("target_grid must specify either 'from' or 'resolution_deg'")
         if self.from_source is not None and self.resolution_deg is not None:
@@ -148,7 +148,7 @@ class QCSpec(BaseModel):
     rules: dict[str, InlineQCRule] = Field(default_factory=dict)
 
     @model_validator(mode="after")
-    def _at_least_one(self) -> "QCSpec":
+    def _at_least_one(self) -> QCSpec:
         if self.rules_file is None and not self.rules:
             # QC is optional; an empty QCSpec is fine.
             pass
@@ -227,7 +227,7 @@ class PipelineSpec(BaseModel):
 
     # ---------------------------------------------------------------- helpers
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "PipelineSpec":
+    def from_yaml(cls, path: str | Path) -> PipelineSpec:
         """Parse and validate a pipeline YAML file."""
         import yaml  # local import keeps optional deps light at module-import time
 

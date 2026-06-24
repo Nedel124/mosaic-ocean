@@ -18,8 +18,8 @@ from mosaic.harmonize import Harmonizer
 from mosaic.prov import build_stac_item, dataset_content_hash, pipeline_hash
 from mosaic.quality import QCEngine
 from mosaic.result import Result
-from mosaic.sources.base import Source, SourceQuery, registry as default_registry
-
+from mosaic.sources.base import Source, SourceQuery
+from mosaic.sources.base import registry as default_registry
 
 # ---------------------------------------------------------------------------
 # public entry points

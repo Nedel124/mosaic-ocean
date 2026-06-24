@@ -6,7 +6,6 @@ from pydantic import ValidationError
 
 from mosaic._spec import PipelineSpec
 
-
 VALID_DOC: dict = {
     "apiVersion": "mosaic/v1",
     "kind": "Pipeline",

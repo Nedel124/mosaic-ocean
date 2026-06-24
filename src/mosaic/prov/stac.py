@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import platform
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from pystac import Item
@@ -81,12 +81,12 @@ def build_stac_item(
 
 def _to_datetime(s: str) -> datetime:
     if isinstance(s, datetime):
-        return s if s.tzinfo else s.replace(tzinfo=timezone.utc)
+        return s if s.tzinfo else s.replace(tzinfo=UTC)
     # accept "YYYY-MM-DD" or full ISO
     try:
-        return datetime.fromisoformat(s).replace(tzinfo=timezone.utc)
+        return datetime.fromisoformat(s).replace(tzinfo=UTC)
     except ValueError:
-        return datetime.strptime(s, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+        return datetime.strptime(s, "%Y-%m-%d").replace(tzinfo=UTC)
 
 
 def _bbox_to_polygon(bbox: list[float]) -> dict[str, Any]:

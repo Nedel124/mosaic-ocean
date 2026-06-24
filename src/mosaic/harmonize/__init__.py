@@ -10,6 +10,6 @@ This package implements the three-tier matching algorithm described in
 """
 from __future__ import annotations
 
-from mosaic.harmonize.harmonizer import Harmonizer, HarmonizationResult, MappingDecision
+from mosaic.harmonize.harmonizer import HarmonizationResult, Harmonizer, MappingDecision
 
 __all__ = ["HarmonizationResult", "Harmonizer", "MappingDecision"]

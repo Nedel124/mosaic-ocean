@@ -9,7 +9,6 @@ import xarray as xr
 
 import mosaic as ms
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
