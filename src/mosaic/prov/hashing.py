@@ -65,9 +65,9 @@ def dataset_content_hash(ds: xr.Dataset) -> str:
     the content hash — only data and shape do.
     """
     h = _hasher()
-    for name in sorted(ds.coords):
+    for name in sorted(str(k) for k in ds.coords):
         _hash_array(h, name, ds.coords[name].values)
-    for name in sorted(ds.data_vars):
+    for name in sorted(str(k) for k in ds.data_vars):
         _hash_array(h, name, ds[name].values)
     return f"{_label()}:{h.hexdigest()}"
 

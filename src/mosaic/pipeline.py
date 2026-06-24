@@ -92,7 +92,7 @@ class Pipeline:
             target = TargetGrid.model_validate({"from": target_grid_from})
         self._harmonize = HarmonizeSpec(
             target_grid=target,
-            time_alignment=time_alignment,  # type: ignore[arg-type]
+            time_alignment=time_alignment,
             cf_dictionary=cf_dictionary,
             overrides=overrides or {},
         )
@@ -114,7 +114,7 @@ class Pipeline:
 
     # ------------------------------------------------------------------ export
     def export(self, *, path: str, format: str = "zarr", provenance: bool = True) -> Pipeline:
-        self._export = ExportSpec(format=format, path=path, provenance=provenance)  # type: ignore[arg-type]
+        self._export = ExportSpec(format=format, path=path, provenance=provenance)
         return self
 
     # --------------------------------------------------------------- materialise

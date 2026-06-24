@@ -122,15 +122,15 @@ class QCEngine:
             window = rule.window or 5
             roll = arr.rolling(time=window, center=True, min_periods=1)
             med = roll.median()
-            mad = (arr - med).pipe(np.abs).rolling(time=window, center=True, min_periods=1).median()
-            scaled = np.abs(arr - med) / (mad.where(mad > 0, 1e-9))
+            mad = abs(arr - med).rolling(time=window, center=True, min_periods=1).median()
+            scaled = abs(arr - med) / (mad.where(mad > 0, 1e-9))
             mask = (scaled <= sigma).astype("int8")
             return mask.fillna(1).astype("int8")
         if rule.type == "gradient":
             sigma = rule.threshold_sigma or 5.0
             diff = arr.diff(dim="time")
             std = float(diff.std().values) or 1e-9
-            mask = (np.abs(diff) <= sigma * std).astype("int8")
+            mask = (abs(diff) <= sigma * std).astype("int8")
             # pad the leading sample as pass
             mask = mask.reindex(time=arr["time"], fill_value=1)
             return mask
