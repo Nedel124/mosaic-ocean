@@ -31,6 +31,28 @@ mosaic prov show out/<name>.zarr.stac.json
   changes, including which source plugin is used or where the output is
   written.
 
+## Temporal alignment and derived-variable provenance
+
+- **`harmonize.time_alignment` is applied between harmonization and QC.**
+  `_apply_time_alignment()` (`src/mosaic/runner.py`) resamples the harmonized
+  dataset before any QC rule, derived variable or mask sees it:
+  `daily_mean`/`hourly_mean` call `ds.resample(time=...).mean(keep_attrs=True)`,
+  `instantaneous`/`nearest` are no-ops. This is what realises the "aggregated
+  to daily means" claims in `docs/datasets.md` for the `00/06/12/18` UTC
+  ERA5 pulls in CS1–CS3 — all three offline fixtures declare
+  `time_alignment: daily_mean`. Covered by
+  `tests/test_time_alignment.py::test_daily_mean_time_alignment`.
+- **Derived-variable provenance attrs (`long_name`, `mosaic:expression`,
+  `mosaic:derived`) are force-assigned per variable**, not merged with
+  `dict.setdefault`. xarray's default `keep_attrs` behaviour carries a
+  DataArray's attrs into the result of a binary op against a scalar (e.g.
+  `wind_speed > 4.0` inherits `wind_speed`'s attrs), so a later derived
+  variable referencing an earlier one could otherwise end up with the
+  *earlier* variable's `mosaic:expression` recorded in its own metadata
+  (`src/mosaic/derive/evaluator.py`). This does not affect
+  `mosaic:content_hash` (attrs are excluded from it — see above) but did
+  affect the accuracy of `mosaic:harmonization.derived` provenance.
+
 ## What is *not* guaranteed
 
 - **Neither `mosaic:pipeline_hash` nor `mosaic:content_hash` is shared

@@ -36,7 +36,8 @@ Cache directory: `data/cache/cmems/cs1_gulf_of_riga/`.
   - `10m_u_component_of_wind` → `eastward_wind`
   - `10m_v_component_of_wind` → `northward_wind`
 * **Hours retrieved**: `00, 06, 12, 18` UTC (aggregated to daily means
-  during harmonisation).
+  during harmonisation — see `harmonize.time_alignment` in
+  `docs/reproducibility.md`).
 * **License**: ECMWF / Copernicus Climate Change Service open licence.
 
 Cache directory: `data/cache/era5/cs1_gulf_of_riga/`.
@@ -83,7 +84,9 @@ Cache directory: `data/cache/cmems/`.
 
 * **Variables used**: `10m_u_component_of_wind`, `10m_v_component_of_wind`,
   `mean_sea_level_pressure`, `total_precipitation`.
-* **Hours retrieved**: `00, 06, 12, 18` UTC (aggregated to daily means).
+* **Hours retrieved**: `00, 06, 12, 18` UTC (aggregated to daily means
+  during harmonisation — see `harmonize.time_alignment` in
+  `docs/reproducibility.md`).
 * **License**: ECMWF / Copernicus Climate Change Service open licence.
 
 Cache directory: `data/cache/era5/`.
@@ -138,7 +141,9 @@ Cache directory: `data/cache/nsidc/`.
 ### ERA5 — single-levels reanalysis
 
 * **Variables used**: `2m_temperature`, `mean_sea_level_pressure`.
-* **Hours retrieved**: `00, 06, 12, 18` UTC (aggregated to daily means).
+* **Hours retrieved**: `00, 06, 12, 18` UTC (aggregated to daily means
+  during harmonisation — see `harmonize.time_alignment` in
+  `docs/reproducibility.md`).
 
 Cache directory: `data/cache/era5/`.
 
