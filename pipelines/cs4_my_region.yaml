@@ -18,8 +18,10 @@ metadata:
     products and a derived hurricane-zone mask combining wind speed and
     mean sea-level pressure.
   authors:
-    - { name: "Gabriela Gic-Grusza", orcid: "0000-0002-5542-118X" }
-    - { name: "Adrian Bugaj" }
+    - { name: "Gabriela Gic-Grusza", orcid: "0000-0002-5542-1182" }
+    - { name: "Adrian Bugaj", orcid: "0009-0008-8287-1796"}
+    - { name: "Sebastian Dudzik", orcid: "0000-0002-9559-7115"}
+    - { name: "Piotr Szeląg", orcid: "0000-0002-9528-3263"}
   tags: [case_study, atlantic, hurricane, cs2]
 
 spec:
