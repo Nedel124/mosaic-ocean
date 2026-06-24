@@ -1,29 +1,29 @@
 cff-version: 1.2.0
 message: "If you use MOSAIC in research, please cite the software. Please also cite the accompanying paper when it becomes available."
 authors:
-  family-names: "Gic-Grusza"
+- family-names: "Gic-Grusza"
   given-names: "Gabriela"
   orcid: "https://orcid.org/0000-0002-5542-1182"
   affiliation: "Faculty of Oceanography and Geography, University of Gdańsk, Poland"
-  family-names: "Bugaj"
+- family-names: "Bugaj"
   given-names: "Adrian"
   orcid: "https://orcid.org/0009-0008-8287-1796"
   affiliation: "Independent researcher, Poland"
-  family-names: "Dudzik"
+- family-names: "Dudzik"
   given-names: "Sebastian"
   orcid: "https://orcid.org/0000-0002-9559-7115"
   affiliation: "Faculty of Electrical Engineering, Częstochowa University of Technology, Poland"
-  family-names: "Szeląg"
+- family-names: "Szeląg"
   given-names: "Piotr"
   orcid: "https://orcid.org/0000-0002-9528-3263"
   affiliation: "Faculty of Electrical Engineering, Częstochowa University of Technology, Poland"
 title: "MOSAIC: Multi-source Ocean Sensor and Model Integration Catalogue"
 type: software
 license: MIT
-version: "0.1.0.dev0"
-date-released: "2026-06-18"
-repository-code: "https://github.com/Nedel124/mosaic-ocean"
-url: "https://github.com/Nedel124/mosaic-ocean"
+version: "1.0.0"
+date-released: "2026-06-24"
+repository-code: "https://github.com/gagigr/mosaic-ocean"
+url: "https://github.com/gagigr/mosaic-ocean"
 preferred-citation:
 type: software
 authors:
@@ -36,7 +36,6 @@ authors:
 - family-names: "Szeląg"
   given-names: "Piotr"
 title: "MOSAIC: Multi-source Ocean Sensor and Model Integration Catalogue"
-version: "2.0.4"
-doi: "10.xxxx/zenodo.xxxx"
-date-released: "2026-06-18"
-url: "https://github.com/Nedel124/mosaic-ocean"
+version: "1.0.0"
+date-released: "2026-06-24"
+url: "https://github.com/gagigr/mosaic-ocean"
