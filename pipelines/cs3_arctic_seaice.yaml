@@ -17,8 +17,10 @@ metadata:
     a long-term anomaly computation against a published climatology, and
     a derived melt-pond proxy mask.
   authors:
-    - { name: "Gabriela Gic-Grusza", orcid: "0000-0002-5542-118X" }
-    - { name: "Adrian Bugaj" }
+    - { name: "Gabriela Gic-Grusza", orcid: "0000-0002-5542-1182" }
+    - { name: "Adrian Bugaj", orcid: "0009-0008-8287-1796"}
+    - { name: "Sebastian Dudzik", orcid: "0000-0002-9559-7115"}
+    - { name: "Piotr Szeląg", orcid: "0000-0002-9528-3263"}
   tags: [case_study, arctic, sea_ice, cs3]
 
 spec:
