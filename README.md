@@ -11,8 +11,12 @@ control, and content-addressable provenance recorded as STAC metadata.
 
 ## What MOSAIC does
 
-- Pulls data from multiple sources through a pluggable connector interface
-  (Copernicus Marine, ERA5/CDS, Sentinel-3 STAC, NDBC, IBTrACS, OSI SAF, ...).
+- Pulls data from multiple sources through a pluggable connector interface.
+  Implemented today: Copernicus Marine (`cmems`) and ERA5/CDS (`era5`), plus
+  `local_netcdf` and a synthetic `dummy` source used for offline tests and
+  fixtures. Sentinel-3 STAC, NDBC and OSI SAF are not yet implemented as
+  connectors; IBTrACS ships only as a static CSV overlaid on the CS2 figures
+  for visual context, not as a pipeline source (see `docs/datasets.md`).
 - Harmonizes variable names, units, CRS and temporal axes against the CF
   Standard Name Table (v85) and three domain-specific dictionaries
   (Baltic / Atlantic / Arctic).
@@ -125,7 +129,8 @@ It uses xarray + Zarr + STAC under the hood, and is complementary to:
 - **STAC / intake** — catalog standards (we adopt them);
 - **Argopy / OceanSpy** — domain libraries (we wrap or coexist).
 
-A more detailed comparison is in `RELATED_WORK.md` of the companion paper.
+A more detailed comparison is in the related-work section of the companion
+paper (not part of this code repository).
 
 ## Reproducibility
 
@@ -168,8 +173,27 @@ file is what gets uploaded alongside the data bundle to Zenodo, and
 `python scripts/fetch_cs1_gulf_of_riga.py verify` cross-checks the local
 files against it.
 
-Dataset identifiers, license terms and bbox/time bounds are documented
-in `docs/datasets.md`.
+### CS2 and CS3
+
+Two further case studies ship the same way — same `all` /
+`populate-fixtures` / `manifest` / `verify` CLI shape as CS1, a live
+pipeline YAML, an offline fixture YAML, and a companion notebook that
+reproduces the paper figures:
+
+```bash
+# CS2 — Atlantic hurricane (Ida-like landfall, Aug-Sep 2021)
+python scripts/fetch_cs2.py populate-fixtures   # or: all (needs CMEMS + CDS accounts)
+mosaic run tests/fixtures/cs2_offline.yaml      # or: pipelines/cs2_atlantic_hurricane.yaml
+# -> notebooks/cs2_atlantic_hurricane.ipynb
+
+# CS3 — Arctic sea-ice retreat (September 2012)
+python scripts/fetch_cs3.py populate-fixtures   # or: all (needs CDS account; NSIDC has no live connector)
+mosaic run tests/fixtures/cs3_offline.yaml      # or: pipelines/cs3_arctic_seaice.yaml
+# -> notebooks/cs3_arctic_seaice.ipynb
+```
+
+Source plugins, bbox/time bounds and what is/isn't a live connector for each
+case study are documented in `docs/datasets.md`.
 
 ## License
 
